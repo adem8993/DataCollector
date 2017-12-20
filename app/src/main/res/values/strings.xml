@@ -1,3 +1,63 @@
 <resources>
-    <string name="app_name">DataCollector</string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
+    <string name="app_name">Veri Toplayıcı</string>
+    <string name="sensor_accelerometer">İvmeölçer</string>
+    <string name="sensor_ambient_temperature">Sıcaklık</string>
+    <string name="sensor_gravity">Yer çekimi</string>
+    <string name="sensor_gyroscope">Jiroskop</string>
+    <string name="sensor_light">Işık</string>
+    <string name="sensor_linear_acceleration">Lineer İvme</string>
+    <string name="sensor_magnetic_field">Manyetik Alan</string>
+    <string name="sensor_pressure">Basınç</string>
+    <string name="sensor_proximity">Yakınlık</string>
+    <string name="sensor_relative_humidity">Nem</string>
+    <string name="sensor_rotation_vector">Devir</string>
+    <string name="title_activity_accelerometer">AccelerometerActivity</string>
+    <string name="monitor">İzle</string>
+    <string name="schedule">Zamanla</string>
+    <string name="records">Kayıtlar</string>
+    <string name="schedule_start_time">Başlangıç Saati</string>
+    <string name="schedule_not_activated">Zamanlanmış kayıt işlemi aktif değil.</string>
+    <string name="schedule_fill_record_length">Kayıt süresini giriniz.</string>
+    <string name="schedule_activate">Kayıt işlemini aktif etmek için ekleme butonuna basınız.</string>
+    <string name="schedule_activated">Kayıt işlemi %1$s saatinde başlayarak %2$s %3$d saat süreyle çalışacak.</string>
+    <string name="schedule_record_frequency">Kayıt Sıklığı</string>
+    <string name="schedule_record_length">Kayıt Süresi(Dakika)</string>
+    <string name="schedule_record_list">Geçmiş Kayıtlar</string>
+    <string-array name="schedule_frequencies">
+        <item>Her gün</item>
+    </string-array>
+    <string name="config">Ayarla</string>
+    <string name="start">Başla</string>
+    <string name="finish">Bitir</string>
+    <string name="config_file_name">Dosya Adı</string>
+    <string name="config_frequency">Frekans</string>
+    <string name="config_date_format">Tarih Formatı</string>
+    <string name="config_precision">Hassasiyet</string>
+    <string name="config_mail">E-Posta</string>
+    <string name="sensor_info_title">Sensör Bilgileri</string>
+    <string name="sensor_info_name">İsim</string>
+    <string name="sensor_info_vendor">Üretici</string>
+    <string name="sensor_info_version">Versiyon</string>
+    <string name="sensor_info_maximum_range">Maks. Aralık</string>
+    <string name="sensor_info_resolution">Çözünürlük</string>
+    <string name="sensor_info_power">Güç(mA)</string>
+    <string name="sensor_info_minimum_delay">Min. Gecikme(us)</string>
+    <string name="accelerometer_request_code">1</string>
+    <string name="accelerometer_config_fileName">AccelerometerConfig</string>
+    <string-array name="date_formats">
+        <item>yyyy-MM-dd HH:mm:ss:SSS</item>
+        <item>HH:mm:ss:SSS</item>
+        <item>MM-dd HH:mm:ss:SSS</item>
+        <item>dd.MM.YYYY</item>
+    </string-array>
+    <string name="default_date_format">dd.MM.YYYY</string>
+    <string name="shared_preferences_frequency">frequency</string>
+    <string name="shared_preferences_startTime">startTime</string>
+    <string name="shared_preferences_recordLength">recordLength</string>
+    <string name="shared_preferences_mail">mail</string>
+    <string name="shared_preferences_scheduleActive">scheduleActive</string>
+
 </resources>
+
