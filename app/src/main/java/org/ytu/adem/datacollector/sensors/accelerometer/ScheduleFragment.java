@@ -10,10 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import org.ytu.adem.datacollector.enums.PendingIntentRequestCode;
 import org.ytu.adem.datacollector.model.RecordLength;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -43,6 +43,8 @@ public class ScheduleFragment extends Fragment {
     private SharedPreferences preferences;
     private View v;
     private AlarmManager alarmManager;
+    private Intent intentAlarm;
+    private EditText startTime;
 
     public ScheduleFragment() {
 
@@ -58,7 +60,7 @@ public class ScheduleFragment extends Fragment {
     @Nullable
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_accelerometer_schedule, container, false);
-        final EditText startTime = (EditText) v.findViewById(R.id.startTime);
+        startTime = (EditText) v.findViewById(R.id.startTime);
         final Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         final EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
         final EditText recordLengthMinute = (EditText) v.findViewById(R.id.recordLengthMinute);
@@ -66,16 +68,16 @@ public class ScheduleFragment extends Fragment {
         startTime.setText(preferences.getString(getResources().getString(R.string.shared_preferences_startTime), null));
         recordLengthHour.setText(String.valueOf(getRecordLength().getHour()));
         recordLengthMinute.setText(String.valueOf(getRecordLength().getMinute()));
-        active.setChecked(preferences.getBoolean(getResources().getString(R.string.shared_preferences_scheduleActive), false));
+        active.setChecked(preferences.getBoolean(getString(R.string.shared_preferences_scheduleActive), false));
         active.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickActiveCheckbox(startTime, recordFrequency, recordLengthHour, recordLengthMinute);
+                clickActiveCheckbox(recordFrequency, recordLengthHour, recordLengthMinute);
             }
         });
         initEditTextListener(startTime);
-        initRecordFrequencies(v);
-        initScheduleInfo(v, active.isChecked());
+        initRecordFrequencies();
+        initScheduleInfo(active.isChecked());
         return v;
     }
 
@@ -91,25 +93,7 @@ public class ScheduleFragment extends Fragment {
         return hour * 60 + minute;
     }
 
-    private void initRecordLengthEditTextListener(EditText recordLength) {
-        recordLength.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putInt(getResources().getString(R.string.shared_preferences_recordLength), Integer.valueOf(s.toString()));
-                    editor.commit();
-                }
-            }
-        });
-    }
-
-    private void initRecordFrequencies(View v) {
+    private void initRecordFrequencies() {
         Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
                 R.array.schedule_frequencies, android.R.layout.simple_spinner_item);
@@ -117,7 +101,7 @@ public class ScheduleFragment extends Fragment {
         recordFrequency.setAdapter(adapter);
     }
 
-    private void initScheduleInfo(View v, boolean isActivated) {
+    private void initScheduleInfo(boolean isActivated) {
         TextView scheduleInfo = (TextView) v.findViewById(R.id.scheduleInfo);
         Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         EditText startTime = (EditText) v.findViewById(R.id.startTime);
@@ -125,13 +109,10 @@ public class ScheduleFragment extends Fragment {
         EditText recordLengthMinute = (EditText) v.findViewById(R.id.recordLengthMinute);
         if (isActivated) {
             scheduleInfo.setText(getString(R.string.schedule_activated, startTime.getText(), recordFrequency.getSelectedItem().toString(), recordLengthHour.getText(), recordLengthMinute.getText()));
-
-        } else if (checkRequiredFields(startTime, recordLengthHour, recordLengthMinute)) {
+        } else if (checkRequiredFields(recordLengthHour, recordLengthMinute)) {
             scheduleInfo.setText(getResources().getString(R.string.schedule_not_activated));
         } else if (recordLengthHour.getText().length() > 0) {
-            scheduleInfo.setText(getResources().getString(R.string.schedule_activate));
-        } else {
-            scheduleInfo.setText(getResources().getString(R.string.schedule_fill_record_length));
+            scheduleInfo.setText(getString(R.string.schedule_fill_required_fields));
         }
     }
 
@@ -144,39 +125,34 @@ public class ScheduleFragment extends Fragment {
         });
     }
 
-    private void clickActiveCheckbox(EditText startTime, Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
+    private void clickActiveCheckbox(Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
         CheckBox checkbox = (CheckBox) v.findViewById(R.id.active);
 
         if (checkbox.isChecked()) {
-            if (checkRequiredFields(startTime, recordLengthHour, recordLengthMinute)) {
-                changeScheduleStatus(true, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
+            if (checkRequiredFields(recordLengthHour, recordLengthMinute)) {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString(getString(R.string.shared_preferences_startTime), startTime.getText().toString());
                 editor.putInt(getString(R.string.shared_preferences_recordLength), getRecordLengthValue(Integer.valueOf(recordLengthHour.getText().toString()), Integer.valueOf(recordLengthMinute.getText().toString())));
                 editor.commit();
+                changeScheduleStatus(true, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
             } else {
                 checkbox.setChecked(false);
             }
         } else {
-            if (isRecordScheduled()) {
-                deActivateScheduledRecordConfirmDialog(startTime, recordFrequency, recordLengthHour, recordLengthMinute);
-                ;
-            } else {
-                changeScheduleStatus(false, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
-            }
+            changeScheduleStatus(false, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
         }
-        initScheduleInfo(v, checkbox.isChecked());
-    }
-
-
-    private boolean isRecordScheduled() {
-        Intent intentAlarm = new Intent(this.getActivity(), Receiver.class);
-        return (PendingIntent.getBroadcast(this.getActivity(), 0, intentAlarm, PendingIntent.FLAG_NO_CREATE) != null);
+        initScheduleInfo(checkbox.isChecked());
     }
 
     private void changeScheduleStatus(boolean activated, EditText startTime, Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(getResources().getString(R.string.shared_preferences_scheduleActive), activated);
+        if (activated) {
+            editor.putBoolean(getResources().getString(R.string.shared_preferences_scheduleActive), activated);
+            scheduleAlarm();
+        } else {
+            editor.remove("scheduleActive");
+            cancelAlarm();
+        }
         editor.commit();
         startTime.setEnabled(!activated);
         recordFrequency.setEnabled(!activated);
@@ -184,30 +160,27 @@ public class ScheduleFragment extends Fragment {
         recordLengthMinute.setEnabled(!activated);
     }
 
-    private void deActivateScheduledRecordConfirmDialog(final EditText startTime, final Spinner recordFrequency, final EditText recordLengthHour, final EditText recordLengthMinute) {
-        new AlertDialog.Builder(this.getActivity())
-                .setTitle("Title")
-                .setMessage("Do you really want to whatever?")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        changeScheduleStatus(false, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int whichButton) {
-                        CheckBox checkbox = (CheckBox) v.findViewById(R.id.active);
-                        checkbox.setChecked(true);
-                    }
-                }).show();
-    }
-
-    private boolean checkRequiredFields(EditText startTime, EditText recordLengthHour, EditText recordLengthMinute) {
-        return !startTime.getText().toString().isEmpty() && !recordLengthHour.getText().toString().isEmpty() && !recordLengthMinute.getText().toString().isEmpty();
+    private boolean checkRequiredFields(EditText recordLengthHour, EditText recordLengthMinute) {
+        TextInputLayout startLabel = (TextInputLayout) v.findViewById(R.id.startTimeLabel);
+        TextInputLayout hourLabel = (TextInputLayout) v.findViewById(R.id.recordLengthHourLabel);
+        TextInputLayout minuteLabel = (TextInputLayout) v.findViewById(R.id.recordLengthMinuteLabel);
+        boolean hasError = false;
+        if (startTime.getText().toString().isEmpty()) {
+            startLabel.setError(getString(R.string.error_required));
+            hasError = true;
+        }
+        if (recordLengthHour.getText().toString().isEmpty()) {
+            hourLabel.setError(getString(R.string.error_required));
+            hasError = true;
+        }
+        if (recordLengthMinute.getText().toString().isEmpty()) {
+            minuteLabel.setError(getString(R.string.error_required));
+            hasError = true;
+        }
+        return !hasError;
     }
 
     private void cancelAlarm() {
-        Intent intentAlarm = new Intent(this.getActivity(), Receiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(),
                 PendingIntentRequestCode.ACCELEROMETER.ordinal(),
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT);
@@ -217,25 +190,35 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void scheduleAlarm() {
-        // time at which alarm will be scheduled here alarm is scheduled at 1 day from current time,
-        // we fetch  the current time in milliseconds and added 1 day time
-        // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
-        Calendar cal = Calendar.getInstance();
+        String alarmStartTime = startTime.getText().toString();
+        String[] alarmTimeParts = alarmStartTime.split(":");
+        int alarmHour = Integer.parseInt(alarmTimeParts[0]);
+        int alarmMinute = Integer.parseInt(alarmTimeParts[1]);
+        Date currentDate  = new Date();//initializes to now
+        Calendar cal_alarm = Calendar.getInstance();
+        Calendar cal_now = Calendar.getInstance();
+        cal_now.setTime(currentDate);
+        cal_alarm.setTime(currentDate);
+        cal_alarm.set(Calendar.HOUR_OF_DAY,alarmHour);//set the alarm time
+        cal_alarm.set(Calendar.MINUTE, alarmMinute);
+        cal_alarm.set(Calendar.SECOND,0);
+        if(cal_alarm.before(cal_now)){//if its in the past increment
+            cal_alarm.add(Calendar.DATE,1);
+        }
 
-        Long time = new GregorianCalendar().getTimeInMillis() + 10 * 1000;
 
         // create an Intent and set the class which will execute when Alarm triggers, here we have
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
         //we will write the code to send SMS inside onRecieve() method pf Alarmreciever class
-        Intent intentAlarm = new Intent(this.getActivity(), Receiver.class);
-        intentAlarm.putExtra("action", getResources().getString(R.string.start));
+        intentAlarm = new Intent(this.getActivity(), Receiver.class);
+        intentAlarm.putExtra("recordLength", preferences.getInt(getString(R.string.shared_preferences_recordLength), 0));
 
         // create the object
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         //set the alarm for particular time
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this.getActivity(),
+        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
                 PendingIntentRequestCode.ACCELEROMETER.ordinal(),
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT));
         Toast.makeText(this.getContext(), "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
@@ -252,7 +235,6 @@ public class ScheduleFragment extends Fragment {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay,
                                   int minute) {
-                scheduleAlarm();
                 String timeText = String.format("%02d:%02d", hourOfDay, minute);
                 editText.setText(timeText, TextView.BufferType.EDITABLE);
             }

@@ -124,7 +124,7 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
         //TODO: External veya internal storage'a yazma desteği olmalı.
         File path = getContext().getExternalFilesDir(null);
         //TODO: Dosya adını sharedPrefences'dan al.
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM HH:mm:ss");
 
         String fileName = preferences.getString("fileName", "a") + "(" + sdf.format(new Date()) + ").txt";
         try {
