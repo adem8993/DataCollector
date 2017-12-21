@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/schedule_start_time"
         android:layout_alignTop="@+id/recordFrequencyLabel"
-        android:layout_toEndOf="@+id/recordLengthLabel">
+        android:layout_toEndOf="@+id/recordLengthHourLabel">
 
         <EditText
             android:id="@+id/startTime"
@@ -55,21 +55,37 @@
             android:focusableInTouchMode="false" />
     </android.support.design.widget.TextInputLayout>
 
-
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/recordLengthLabel"
+        android:id="@+id/recordLengthHourLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/startTimeLabel"
-        android:hint="@string/schedule_record_length">
+        android:hint="@string/schedule_record_length_hour">
 
         <EditText
-            android:id="@+id/recordLength"
+            android:id="@+id/recordLengthHour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:ems="8"
-            android:maxLength="3"/>
+            android:maxLength="2"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/recordLengthMinuteLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/startTimeLabel"
+        android:layout_toRightOf="@+id/recordLengthHourLabel"
+        android:hint="@string/schedule_record_length_minute">
+
+        <EditText
+            android:id="@+id/recordLengthMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="8"
+            android:maxLength="2"/>
     </android.support.design.widget.TextInputLayout>
 
 </RelativeLayout>

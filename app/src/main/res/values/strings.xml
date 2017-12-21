@@ -20,10 +20,11 @@
     <string name="schedule_start_time">Başlangıç Saati</string>
     <string name="schedule_not_activated">Zamanlanmış kayıt işlemi aktif değil.</string>
     <string name="schedule_fill_record_length">Kayıt süresini giriniz.</string>
-    <string name="schedule_activate">Kayıt işlemini aktif etmek için ekleme butonuna basınız.</string>
-    <string name="schedule_activated">Kayıt işlemi %1$s saatinde başlayarak %2$s %3$d saat süreyle çalışacak.</string>
+    <string name="schedule_activate">Kayıt işlemini aktif edilmedi.</string>
+    <string name="schedule_activated">Kayıt işlemi %1$s saatinde başlayarak %2$s %3$s saat %4$s dakika süreyle çalışacak.</string>
     <string name="schedule_record_frequency">Kayıt Sıklığı</string>
-    <string name="schedule_record_length">Kayıt Süresi(Dakika)</string>
+    <string name="schedule_record_length_hour">Kayıt Süresi(Saat)</string>
+    <string name="schedule_record_length_minute">Kayıt Süresi(Dakika)</string>
     <string name="schedule_record_list">Geçmiş Kayıtlar</string>
     <string-array name="schedule_frequencies">
         <item>Her gün</item>

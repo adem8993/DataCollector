@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.enums.PendingIntentRequestCode;
+import org.ytu.adem.datacollector.model.RecordLength;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -59,21 +60,35 @@ public class ScheduleFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_accelerometer_schedule, container, false);
         final EditText startTime = (EditText) v.findViewById(R.id.startTime);
         final Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
-        final EditText recordLength = (EditText) v.findViewById(R.id.recordLength);
+        final EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
+        final EditText recordLengthMinute = (EditText) v.findViewById(R.id.recordLengthMinute);
         final CheckBox active = (CheckBox) v.findViewById(R.id.active);
         startTime.setText(preferences.getString(getResources().getString(R.string.shared_preferences_startTime), null));
+        recordLengthHour.setText(String.valueOf(getRecordLength().getHour()));
+        recordLengthMinute.setText(String.valueOf(getRecordLength().getMinute()));
         active.setChecked(preferences.getBoolean(getResources().getString(R.string.shared_preferences_scheduleActive), false));
         active.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickActiveCheckbox(active.isChecked(), startTime, recordFrequency, recordLength);
+                clickActiveCheckbox(startTime, recordFrequency, recordLengthHour, recordLengthMinute);
             }
         });
-    //        initRecordLengthEditTextListener(recordLength);
-        initEditTextListener(startTime, getResources().getString(R.string.shared_preferences_startTime));
+        initEditTextListener(startTime);
         initRecordFrequencies(v);
         initScheduleInfo(v, active.isChecked());
         return v;
+    }
+
+    private RecordLength getRecordLength() {
+        int recordLengthValue = preferences.getInt(getString(R.string.shared_preferences_recordLength), 0);
+        RecordLength recordLength = new RecordLength();
+        recordLength.setHour(recordLengthValue / 60);
+        recordLength.setMinute(recordLengthValue % 60);
+        return recordLength;
+    }
+
+    private int getRecordLengthValue(int hour, int minute) {
+        return hour * 60 + minute;
     }
 
     private void initRecordLengthEditTextListener(EditText recordLength) {
@@ -104,68 +119,79 @@ public class ScheduleFragment extends Fragment {
 
     private void initScheduleInfo(View v, boolean isActivated) {
         TextView scheduleInfo = (TextView) v.findViewById(R.id.scheduleInfo);
-        EditText recordLength = (EditText) v.findViewById(R.id.recordLength);
+        Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
+        EditText startTime = (EditText) v.findViewById(R.id.startTime);
+        EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
+        EditText recordLengthMinute = (EditText) v.findViewById(R.id.recordLengthMinute);
         if (isActivated) {
-            if (recordLength.getText().length() > 0) {
-                scheduleInfo.setText(getResources().getString(R.string.schedule_activate));
-            } else {
-                scheduleInfo.setText(getResources().getString(R.string.schedule_fill_record_length));
-            }
-        } else {
+            scheduleInfo.setText(getString(R.string.schedule_activated, startTime.getText(), recordFrequency.getSelectedItem().toString(), recordLengthHour.getText(), recordLengthMinute.getText()));
+
+        } else if (checkRequiredFields(startTime, recordLengthHour, recordLengthMinute)) {
             scheduleInfo.setText(getResources().getString(R.string.schedule_not_activated));
+        } else if (recordLengthHour.getText().length() > 0) {
+            scheduleInfo.setText(getResources().getString(R.string.schedule_activate));
+        } else {
+            scheduleInfo.setText(getResources().getString(R.string.schedule_fill_record_length));
         }
     }
 
-    private void initEditTextListener(final EditText editText, final String preferencesName) {
+    private void initEditTextListener(final EditText editText) {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createDialog(preferencesName, editText).show();
+                createDialog(editText).show();
             }
         });
     }
 
-    private void clickActiveCheckbox(boolean isChecked, EditText startTime, Spinner recordFrequency, EditText recordLength) {
-        if (isChecked) {
-            if (checkRequiredFields(startTime, recordLength)) {
-                changeScheduleStatus(false, startTime, recordFrequency, recordLength);
+    private void clickActiveCheckbox(EditText startTime, Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
+        CheckBox checkbox = (CheckBox) v.findViewById(R.id.active);
+
+        if (checkbox.isChecked()) {
+            if (checkRequiredFields(startTime, recordLengthHour, recordLengthMinute)) {
+                changeScheduleStatus(true, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(getString(R.string.shared_preferences_startTime), startTime.getText().toString());
+                editor.putInt(getString(R.string.shared_preferences_recordLength), getRecordLengthValue(Integer.valueOf(recordLengthHour.getText().toString()), Integer.valueOf(recordLengthMinute.getText().toString())));
+                editor.commit();
             } else {
-                CheckBox checkbox = (CheckBox) v.findViewById(R.id.active);
                 checkbox.setChecked(false);
             }
         } else {
             if (isRecordScheduled()) {
-                deActivateScheduledRecordConfirmDialog(startTime, recordFrequency, recordLength);
+                deActivateScheduledRecordConfirmDialog(startTime, recordFrequency, recordLengthHour, recordLengthMinute);
                 ;
             } else {
-                changeScheduleStatus(false, startTime, recordFrequency, recordLength);
+                changeScheduleStatus(false, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
             }
         }
-        initScheduleInfo(v, isChecked);
+        initScheduleInfo(v, checkbox.isChecked());
     }
+
 
     private boolean isRecordScheduled() {
         Intent intentAlarm = new Intent(this.getActivity(), Receiver.class);
         return (PendingIntent.getBroadcast(this.getActivity(), 0, intentAlarm, PendingIntent.FLAG_NO_CREATE) != null);
     }
 
-    private void changeScheduleStatus(boolean activated, EditText startTime, Spinner recordFrequency, EditText recordLength) {
+    private void changeScheduleStatus(boolean activated, EditText startTime, Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(getResources().getString(R.string.shared_preferences_scheduleActive), activated);
         editor.commit();
         startTime.setEnabled(!activated);
         recordFrequency.setEnabled(!activated);
-        recordLength.setEnabled(!activated);
+        recordLengthHour.setEnabled(!activated);
+        recordLengthMinute.setEnabled(!activated);
     }
 
-    private void deActivateScheduledRecordConfirmDialog(final EditText startTime, final Spinner recordFrequency, final EditText recordLength) {
+    private void deActivateScheduledRecordConfirmDialog(final EditText startTime, final Spinner recordFrequency, final EditText recordLengthHour, final EditText recordLengthMinute) {
         new AlertDialog.Builder(this.getActivity())
                 .setTitle("Title")
                 .setMessage("Do you really want to whatever?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        changeScheduleStatus(false, startTime, recordFrequency, recordLength);
+                        changeScheduleStatus(false, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -176,8 +202,8 @@ public class ScheduleFragment extends Fragment {
                 }).show();
     }
 
-    private boolean checkRequiredFields(EditText startTime, EditText recordLength) {
-        return !startTime.getText().toString().isEmpty() && !recordLength.getText().toString().isEmpty();
+    private boolean checkRequiredFields(EditText startTime, EditText recordLengthHour, EditText recordLengthMinute) {
+        return !startTime.getText().toString().isEmpty() && !recordLengthHour.getText().toString().isEmpty() && !recordLengthMinute.getText().toString().isEmpty();
     }
 
     private void cancelAlarm() {
@@ -216,11 +242,11 @@ public class ScheduleFragment extends Fragment {
 
     }
 
-    private Dialog createDialog(String preferencesText, EditText editText) {
-        return new TimePickerDialog(getActivity(), getTimePickerListener(preferencesText, editText), 1, 1, true);
+    private Dialog createDialog(EditText editText) {
+        return new TimePickerDialog(getActivity(), getTimePickerListener(editText), 1, 1, true);
     }
 
-    private TimePickerDialog.OnTimeSetListener getTimePickerListener(final String preferencesText, final EditText editText) {
+    private TimePickerDialog.OnTimeSetListener getTimePickerListener(final EditText editText) {
         return new TimePickerDialog.OnTimeSetListener() {
 
             @Override
@@ -228,9 +254,6 @@ public class ScheduleFragment extends Fragment {
                                   int minute) {
                 scheduleAlarm();
                 String timeText = String.format("%02d:%02d", hourOfDay, minute);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(preferencesText, timeText);
-                editor.commit();
                 editText.setText(timeText, TextView.BufferType.EDITABLE);
             }
         };
