@@ -54,7 +54,7 @@ public class ScheduleFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferences = getContext().getSharedPreferences(getResources().getString(R.string.accelerometer_config_fileName), MODE_PRIVATE);
-
+        intentAlarm = new Intent(this.getActivity(), Receiver.class);
     }
 
     @Nullable
@@ -168,14 +168,20 @@ public class ScheduleFragment extends Fragment {
         if (startTime.getText().toString().isEmpty()) {
             startLabel.setError(getString(R.string.error_required));
             hasError = true;
+        } else {
+            startLabel.setError(null);
         }
         if (recordLengthHour.getText().toString().isEmpty()) {
             hourLabel.setError(getString(R.string.error_required));
             hasError = true;
+        } else {
+            hourLabel.setError(null);
         }
         if (recordLengthMinute.getText().toString().isEmpty()) {
             minuteLabel.setError(getString(R.string.error_required));
             hasError = true;
+        } else {
+            minuteLabel.setError(null);
         }
         return !hasError;
     }
@@ -184,9 +190,11 @@ public class ScheduleFragment extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(),
                 PendingIntentRequestCode.ACCELEROMETER.ordinal(),
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT);
-        pendingIntent.cancel();
-        alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
+        if(pendingIntent != null) {
+            pendingIntent.cancel();
+            alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     private void scheduleAlarm() {
@@ -211,7 +219,6 @@ public class ScheduleFragment extends Fragment {
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
         //we will write the code to send SMS inside onRecieve() method pf Alarmreciever class
-        intentAlarm = new Intent(this.getActivity(), Receiver.class);
         intentAlarm.putExtra("recordLength", preferences.getInt(getString(R.string.shared_preferences_recordLength), 0));
 
         // create the object

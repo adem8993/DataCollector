@@ -66,7 +66,7 @@ public class AccelerometerRecorder extends IntentService implements SensorEventL
 
     private void getAccelerometer(SensorEvent event) {
         long actualTime = event.timestamp;
-        if (actualTime - lastUpdate < ONE_SECOND_NANO / preferences.getInt("frequency", 0)) return;
+        if (actualTime - lastUpdate < ONE_SECOND_NANO / preferences.getInt("frequency", 1)) return;
         float[] values = event.values;
         // Movement
         float x = values[0];
