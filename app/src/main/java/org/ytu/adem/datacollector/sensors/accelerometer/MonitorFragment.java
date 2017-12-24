@@ -126,7 +126,7 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
         //TODO: Dosya adını sharedPrefences'dan al.
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM HH:mm:ss");
 
-        String fileName = preferences.getString("fileName", "a") + "(" + sdf.format(new Date()) + ").txt";
+        String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a") + "(" + sdf.format(new Date()) + ").csv";
         try {
             FileWriter writer = new FileWriter(new File(path, fileName));
             for (String line : valuesToWrite) {
@@ -151,7 +151,7 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         long actualTime = event.timestamp;
-        if (actualTime - lastUpdate < ONE_SECOND_NANO / preferences.getInt("frequency", 0)) return;
+        if (actualTime - lastUpdate < ONE_SECOND_NANO / preferences.getInt("frequency", 1)) return;
 
         lastUpdate = actualTime;
         xEntries.add(new Entry(xEntries.size(), event.values[0]));

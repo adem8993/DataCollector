@@ -5,14 +5,12 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +20,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import org.ytu.adem.datacollector.R;
-import org.ytu.adem.datacollector.enums.PendingIntentRequestCode;
+import org.ytu.adem.datacollector.enums.Action;
+import org.ytu.adem.datacollector.enums.Sensor;
 import org.ytu.adem.datacollector.model.RecordLength;
+import org.ytu.adem.datacollector.sensors.Receiver;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -187,13 +185,20 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void cancelAlarm() {
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(),
-                PendingIntentRequestCode.ACCELEROMETER.ordinal(),
+        PendingIntent startingPendingIntent = PendingIntent.getBroadcast(this.getActivity(),
+                Sensor.ACCELEROMETER.ordinal(),
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT);
-        if(pendingIntent != null) {
-            pendingIntent.cancel();
-            alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-            alarmManager.cancel(pendingIntent);
+        PendingIntent stoppingPendingIntent = PendingIntent.getBroadcast(this.getActivity(),
+                100 - Sensor.ACCELEROMETER.ordinal(),
+                intentAlarm, PendingIntent.FLAG_ONE_SHOT);
+        alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        if (startingPendingIntent != null) {
+            startingPendingIntent.cancel();
+            alarmManager.cancel(startingPendingIntent);
+        }
+        if (stoppingPendingIntent != null) {
+            stoppingPendingIntent.cancel();
+            alarmManager.cancel(stoppingPendingIntent);
         }
     }
 
@@ -202,34 +207,34 @@ public class ScheduleFragment extends Fragment {
         String[] alarmTimeParts = alarmStartTime.split(":");
         int alarmHour = Integer.parseInt(alarmTimeParts[0]);
         int alarmMinute = Integer.parseInt(alarmTimeParts[1]);
-        Date currentDate  = new Date();//initializes to now
+        Date currentDate = new Date();//initializes to now
         Calendar cal_alarm = Calendar.getInstance();
         Calendar cal_now = Calendar.getInstance();
         cal_now.setTime(currentDate);
         cal_alarm.setTime(currentDate);
-        cal_alarm.set(Calendar.HOUR_OF_DAY,alarmHour);//set the alarm time
+        cal_alarm.set(Calendar.HOUR_OF_DAY, alarmHour);//set the alarm time
         cal_alarm.set(Calendar.MINUTE, alarmMinute);
-        cal_alarm.set(Calendar.SECOND,0);
-        if(cal_alarm.before(cal_now)){//if its in the past increment
-            cal_alarm.add(Calendar.DATE,1);
+        cal_alarm.set(Calendar.SECOND, 0);
+        if (cal_alarm.before(cal_now)) {//if its in the past increment
+            cal_alarm.add(Calendar.DATE, 1);
         }
-
-
         // create an Intent and set the class which will execute when Alarm triggers, here we have
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
         //we will write the code to send SMS inside onRecieve() method pf Alarmreciever class
-        intentAlarm.putExtra("recordLength", preferences.getInt(getString(R.string.shared_preferences_recordLength), 0));
-
-        // create the object
+        intentAlarm.putExtra("sensor", Sensor.ACCELEROMETER);
+        intentAlarm.putExtra("action", Action.START);
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         //set the alarm for particular time
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
-                PendingIntentRequestCode.ACCELEROMETER.ordinal(),
+                Sensor.ACCELEROMETER.ordinal(),
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT));
-        Toast.makeText(this.getContext(), "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
-
+        intentAlarm.putExtra("action", Action.STOP);
+        cal_alarm.add(Calendar.MINUTE, preferences.getInt(getString(R.string.shared_preferences_recordLength), 0));
+        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
+                100 - Sensor.ACCELEROMETER.ordinal(),
+                intentAlarm, PendingIntent.FLAG_ONE_SHOT));
     }
 
     private Dialog createDialog(EditText editText) {

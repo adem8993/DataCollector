@@ -22,8 +22,8 @@
         <activity android:name=".sensors.accelerometer.AccelerometerActivity"
             android:theme="@style/AppTheme.NoActionBar"
         android:screenOrientation="portrait"></activity>
-        <receiver android:name=".sensors.accelerometer.Receiver"/>
-        <service android:name=".sensors.service.recorder.AccelerometerRecorder"
+        <receiver android:name=".sensors.Receiver"/>
+        <service android:name=".sensors.accelerometer.AccelerometerRecorder"
             android:exported="false" />
 
     </application>

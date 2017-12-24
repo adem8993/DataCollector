@@ -26,6 +26,7 @@
     <string name="schedule_record_length_hour">Kayıt Süresi(Saat)</string>
     <string name="schedule_record_length_minute">Kayıt Süresi(Dakika)</string>
     <string name="schedule_record_list">Geçmiş Kayıtlar</string>
+    <string name="record_started">%1$s sensörü için kayıt işlemi başladı.</string>
     <string-array name="schedule_frequencies">
         <item>Bir kere</item>
         <item>Hergün</item>
@@ -59,6 +60,7 @@
         <item>dd.MM.YYYY</item>
     </string-array>
     <string name="default_date_format">dd.MM.YYYY</string>
+    <string name="shared_preferences_fileName">fileName</string>
     <string name="shared_preferences_frequency">frequency</string>
     <string name="shared_preferences_startTime">startTime</string>
     <string name="shared_preferences_recordLength">recordLength</string>
