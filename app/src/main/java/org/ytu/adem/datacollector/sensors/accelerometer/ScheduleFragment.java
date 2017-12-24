@@ -222,15 +222,15 @@ public class ScheduleFragment extends Fragment {
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
         //we will write the code to send SMS inside onRecieve() method pf Alarmreciever class
-        intentAlarm.putExtra("sensor", Sensor.ACCELEROMETER);
-        intentAlarm.putExtra("action", Action.START);
+        intentAlarm.putExtra("sensor", Sensor.ACCELEROMETER.toString());
+        intentAlarm.putExtra("action", Action.START.toString());
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         //set the alarm for particular time
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
                 Sensor.ACCELEROMETER.ordinal(),
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT));
-        intentAlarm.putExtra("action", Action.STOP);
+        intentAlarm.putExtra("action", Action.STOP.toString());
         cal_alarm.add(Calendar.MINUTE, preferences.getInt(getString(R.string.shared_preferences_recordLength), 0));
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
                 100 - Sensor.ACCELEROMETER.ordinal(),

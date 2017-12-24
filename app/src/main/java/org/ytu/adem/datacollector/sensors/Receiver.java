@@ -18,8 +18,8 @@ import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerRecorder;
 public class Receiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Action action = (Action) intent.getSerializableExtra("action");
-        Sensor sensor = (Sensor) intent.getSerializableExtra("sensor");
+        String action = intent.getStringExtra("action");
+        String sensor = intent.getStringExtra("sensor");
         String sensorName = "Bilinmeyen";
         Resources resources = context.getResources();
         Boolean actionStart = initActionStart(action);
@@ -27,7 +27,7 @@ public class Receiver extends BroadcastReceiver {
             Toast.makeText(context, String.format("Action not defined", sensor, action), Toast.LENGTH_LONG).show();
             return;
         }
-        if (Sensor.ACCELEROMETER.equals(sensor)) {
+        if (Sensor.ACCELEROMETER.toString().equals(sensor)) {
             Intent accelerometerIntent = new Intent(context, AccelerometerRecorder.class);
             sensorName = resources.getString(R.string.sensor_accelerometer);
             if (actionStart) {
@@ -39,11 +39,11 @@ public class Receiver extends BroadcastReceiver {
         if(actionStart) Toast.makeText(context, resources.getString(R.string.record_started, sensorName), Toast.LENGTH_LONG).show();
     }
 
-    private Boolean initActionStart(Action action) {
+    private Boolean initActionStart(String action) {
         Boolean actionStart = null;
-        if (Action.START.equals(action)) {
+        if (Action.START.toString().equals(action)) {
             actionStart = true;
-        } else if (Action.STOP.equals(action)) {
+        } else if (Action.STOP.toString().equals(action)) {
             actionStart = false;
         }
         return actionStart;
