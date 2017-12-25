@@ -1,99 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container_scroll_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+            android:id="@+id/container_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_sensor_list"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:columnCount="1"
-    android:rowCount="6"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.ytu.adem.sensorcollector.SensorListActivity">
-    <Button
-        android:id="@+id/btn_accelerometer"
-        android:text="@string/sensor_accelerometer"
-        android:layout_gravity="start"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/activity_sensor_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:columnCount="1"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:rowCount="6"
+                tools:context="org.ytu.adem.sensorcollector.SensorListActivity">
 
-    <Button
-        android:id="@+id/btn_temperature"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_ambient_temperature"
-        android:onClick="performFileSearch"
-        android:enabled="false"/>
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btn_gravity"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_gravity"
-        android:onClick="performFileSearch"
-        android:enabled="false"/>
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
 
-    <Button
-        android:id="@+id/btn_gyroscope"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_gyroscope"
-        android:onClick="openGyroscope"
-        android:enabled="false"/>
+            <Button
+                android:id="@+id/btn_accelerometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/sensor_accelerometer"/>
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_light"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_light"
-        android:onClick="openAccelerometerActivity"
-        android:enabled="false"/>
-
-    <Button
-        android:id="@+id/btn_linear_acceleration"
-        android:text="@string/sensor_linear_acceleration"
-        android:layout_width="match_parent"
-        android:backgroundTint="@color/colorAccent"
-        android:onClick="openAccelerometerActivity"
-        android:enabled="false"/>
+        <LinearLayout android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+            <Button
+                android:id="@+id/btn_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:onClick="performFileSearch"
+                android:text="@string/sensor_ambient_temperature"/>
+        </LinearLayout>
 
 
-    <Button
-        android:id="@+id/btn_magnetic_field"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_magnetic_field"
-        android:onClick="openAccelerometerActivity"
-        android:enabled="false"/>
+        <Button
+            android:id="@+id/btn_gravity"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="performFileSearch"
+            android:text="@string/sensor_gravity"/>
 
-    <Button
-        android:id="@+id/btn_pressure"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_pressure"
-        android:onClick="openAccelerometerActivity"
-        android:enabled="false"/>
+        <Button
+            android:id="@+id/btn_gyroscope"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="openGyroscope"
+            android:text="@string/sensor_gyroscope"/>
 
-    <Button
-        android:id="@+id/btn_proximity"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_proximity"
-        android:onClick="openAccelerometerActivity"
-        android:enabled="false"/>
+        <Button
+            android:id="@+id/btn_light"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="openAccelerometerActivity"
+            android:text="@string/sensor_light"/>
 
-    <Button
-        android:id="@+id/btn_relative_humidity"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_relative_humidity"
-        android:onClick="openAccelerometerActivity"
-        android:enabled="false"/>
+        <Button
+            android:id="@+id/btn_linear_acceleration"
+            android:layout_width="match_parent"
+            android:backgroundTint="@color/colorAccent"
+            android:enabled="false"
+            android:onClick="openAccelerometerActivity"
+            android:text="@string/sensor_linear_acceleration"/>
 
-    <Button
-        android:id="@+id/btn_rotation_vector"
-        android:layout_width="match_parent"
-        android:text="@string/sensor_rotation_vector"
-        android:onClick="openAccelerometerActivity"
-        android:enabled="false"/>
 
-</GridLayout>
+        <Button
+            android:id="@+id/btn_magnetic_field"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="openAccelerometerActivity"
+            android:text="@string/sensor_magnetic_field"/>
+
+        <Button
+            android:id="@+id/btn_pressure"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="openAccelerometerActivity"
+            android:text="@string/sensor_pressure"/>
+
+        <Button
+            android:id="@+id/btn_proximity"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="openAccelerometerActivity"
+            android:text="@string/sensor_proximity"/>
+
+        <Button
+            android:id="@+id/btn_relative_humidity"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="openAccelerometerActivity"
+            android:text="@string/sensor_relative_humidity"/>
+
+        <Button
+            android:id="@+id/btn_rotation_vector"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:onClick="openAccelerometerActivity"
+            android:text="@string/sensor_rotation_vector"/>
+
+    </GridLayout>
 </ScrollView>

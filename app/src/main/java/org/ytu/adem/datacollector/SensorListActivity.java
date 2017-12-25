@@ -19,7 +19,7 @@ import org.ytu.adem.datacollector.sensors.proximity.ProximityActivity;
 import org.ytu.adem.datacollector.sensors.rotationVector.RotationVectorActivity;
 import org.ytu.adem.datacollector.sensors.temperature.TemperatureActivity;
 
-public class SensorListActivity extends AppCompatActivity implements View.OnClickListener {
+public class SensorListActivity extends AppCompatActivity  {
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
     private Sensor temperatureSensor;
@@ -42,26 +42,6 @@ public class SensorListActivity extends AppCompatActivity implements View.OnClic
         setButtonStates();
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_accelerometer:
-                openAccelerometerActivity(view);
-                break;
-            case R.id.btn_temperature:
-                openTemperatureActivity(view);
-                break;
-            case R.id.btn_gravity:
-                openGravityActivity(view);
-                break;
-            case R.id.btn_gyroscope:
-                openAccelerationActivity(view);
-                break;
-            default:
-                break;
-        }
-    }
-
     private void getSensors() {
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -77,11 +57,7 @@ public class SensorListActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setButtonStates() {
-        Button accelerometerButton = (Button) findViewById(R.id.btn_accelerometer);
-        accelerometerButton.setOnClickListener(this);
-        isSensorButtonEnabled(accelerometerSensor, accelerometerButton);
-        Button temperatureButton = (Button) findViewById(R.id.btn_temperature);
-        temperatureButton.setOnClickListener(this);
+        isSensorButtonEnabled(accelerometerSensor, (Button) findViewById(R.id.btn_accelerometer));
         isSensorButtonEnabled(temperatureSensor, (Button) findViewById(R.id.btn_temperature));
         isSensorButtonEnabled(gravitySensor, (Button) findViewById(R.id.btn_gravity));
         isSensorButtonEnabled(gyroscopeSensor, (Button) findViewById(R.id.btn_gyroscope));

@@ -126,7 +126,7 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
         //TODO: Dosya adını sharedPrefences'dan al.
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM HH:mm:ss");
 
-        String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a") + "(" + sdf.format(new Date()) + ").csv";
+        String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a") + "(" + sdf.format(new Date()) + ").txt";
         try {
             FileWriter writer = new FileWriter(new File(path, fileName));
             for (String line : valuesToWrite) {
@@ -136,7 +136,6 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
             Toast.makeText(getContext(), "Sensör verileri dosyaya yazıldı.\nDosya adı: " + fileName, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             Toast.makeText(getContext(), "Veriler dosyaya yazılamadı. Dosya Adı:" + fileName, Toast.LENGTH_SHORT).show();
-
             System.out.println(e);
         }
     }
