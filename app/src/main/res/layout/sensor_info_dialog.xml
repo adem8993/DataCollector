@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:weightSum="1"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/nameLabel"
             android:layout_width="match_parent"
@@ -14,6 +17,7 @@
             android:textStyle="bold"
             android:layout_weight="0.7"
             android:text="@string/sensor_info_name" />
+
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
@@ -21,10 +25,12 @@
             android:text="A"
             android:layout_weight="0.3" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:weightSum="1"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/vendorLabel"
             android:layout_width="match_parent"
@@ -32,7 +38,8 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:textStyle="bold"
             android:layout_weight="0.7"
-            android:text="@string/sensor_info_vendor"/>
+            android:text="@string/sensor_info_vendor" />
+
         <TextView
             android:id="@+id/vendor"
             android:layout_width="match_parent"
@@ -44,6 +51,7 @@
         android:layout_width="match_parent"
         android:weightSum="1"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/versionLabel"
             android:layout_width="match_parent"
@@ -52,6 +60,7 @@
             android:textStyle="bold"
             android:layout_weight="0.7"
             android:text="@string/sensor_info_version" />
+
         <TextView
             android:id="@+id/version"
             android:layout_width="match_parent"
@@ -63,6 +72,7 @@
         android:layout_width="match_parent"
         android:weightSum="1"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/maximumRangeLabel"
             android:layout_width="match_parent"
@@ -71,6 +81,7 @@
             android:textStyle="bold"
             android:layout_weight="0.7"
             android:text="@string/sensor_info_maximum_range" />
+
         <TextView
             android:id="@+id/maximumRange"
             android:layout_width="match_parent"
@@ -82,6 +93,7 @@
         android:layout_width="match_parent"
         android:weightSum="1"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/resolutionLabel"
             android:layout_width="match_parent"
@@ -90,6 +102,7 @@
             android:textStyle="bold"
             android:layout_weight="0.7"
             android:text="@string/sensor_info_resolution" />
+
         <TextView
             android:id="@+id/resolution"
             android:layout_width="match_parent"
@@ -101,6 +114,7 @@
         android:layout_width="match_parent"
         android:weightSum="1"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/powerLabel"
             android:layout_width="match_parent"
@@ -109,6 +123,7 @@
             android:textStyle="bold"
             android:layout_weight="0.7"
             android:text="@string/sensor_info_power" />
+
         <TextView
             android:id="@+id/power"
             android:layout_width="match_parent"
@@ -120,6 +135,7 @@
         android:layout_width="match_parent"
         android:weightSum="1"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/minimumDelayLabel"
             android:layout_width="match_parent"
@@ -128,6 +144,7 @@
             android:textStyle="bold"
             android:layout_weight="0.6"
             android:text="@string/sensor_info_minimum_delay" />
+
         <TextView
             android:id="@+id/minimumDelay"
             android:layout_width="match_parent"
