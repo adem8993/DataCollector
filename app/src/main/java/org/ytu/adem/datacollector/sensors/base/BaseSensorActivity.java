@@ -12,7 +12,7 @@ import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.adapter.ViewPagerAdapter;
 import org.ytu.adem.datacollector.sensors.InfoDialog;
 import org.ytu.adem.datacollector.sensors.accelerometer.ConfigFragment;
-import org.ytu.adem.datacollector.sensors.accelerometer.MonitorFragment;
+import org.ytu.adem.datacollector.sensors.common.ThreeAxisMonitorFragment;
 import org.ytu.adem.datacollector.sensors.accelerometer.RecordFragment;
 import org.ytu.adem.datacollector.sensors.accelerometer.ScheduleFragment;
 
@@ -26,16 +26,16 @@ public class BaseSensorActivity extends FragmentActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
-    protected  void init(int sensorType) {
-        setupViewPager();
+    protected  void init(int sensorType, String configFileName) {
+        setupViewPager(sensorType, configFileName);
         initTabLayout();
         initSensorInfo(sensorType);
     }
 
-    private void setupViewPager() {
+    private void setupViewPager(int sensorType, String configFileName) {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MonitorFragment(), getString(R.string.monitor));
+        adapter.addFragment(new ThreeAxisMonitorFragment(sensorType, configFileName), getString(R.string.monitor));
         adapter.addFragment(new ScheduleFragment(), getString(R.string.schedule));
         adapter.addFragment(new ConfigFragment(), getString(R.string.config));
         adapter.addFragment(new RecordFragment(), getString(R.string.records));

@@ -1,6 +1,7 @@
 package org.ytu.adem.datacollector.sensors.accelerometer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -46,7 +47,14 @@ public class AccelerometerRecorder extends BaseRecorderService {
         sensorManager.unregisterListener(this);
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a");
         writeSensorDataToFile(fileName);
+        checkAlarmActivation();
         super.onDestroy();
+    }
+
+    private void checkAlarmActivation() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(getString(R.string.shared_preferences_scheduleActive));
+        editor.commit();
     }
 
     @Override

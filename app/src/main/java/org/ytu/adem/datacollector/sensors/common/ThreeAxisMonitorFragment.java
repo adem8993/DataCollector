@@ -1,7 +1,7 @@
-package org.ytu.adem.datacollector.sensors.accelerometer;
+package org.ytu.adem.datacollector.sensors.common;
 
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -18,21 +18,18 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.model.ThreeAxisValue;
+import org.ytu.adem.datacollector.util.Util;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,22 +42,31 @@ import static android.content.Context.SENSOR_SERVICE;
  * Created by Adem on 15.06.2017.
  */
 
-public class MonitorFragment extends Fragment implements SensorEventListener {
+public class ThreeAxisMonitorFragment extends Fragment implements SensorEventListener {
     private static final int ONE_SECOND_NANO = 1000000000;
     private static final int LINE_WIDTH = 5;
     List<String> valuesToWrite = new ArrayList<>();
+    SharedPreferences preferences;
     private SensorManager sensorManager;
-    private Sensor accelerometerSensor;
+    private Sensor activeSensor;
     private List<Entry> xEntries = new ArrayList<Entry>();
     private List<Entry> yEntries = new ArrayList<>();
     private List<Entry> zEntries = new ArrayList<>();
     private LineChart chart;
     private long lastUpdate = 0;
-    SharedPreferences preferences;
     private Button stopButton;
+    private int precision;
+    private String configFileName;
+    private int sensorType;
 
-    public MonitorFragment() {
+    public ThreeAxisMonitorFragment() {
 
+    }
+
+    @SuppressLint("ValidFragment")
+    public ThreeAxisMonitorFragment(int sensorType, String configFileName) {
+        this.sensorType = sensorType;
+        this.configFileName = configFileName;
     }
 
     @Override
@@ -70,8 +76,9 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
     }
 
     private void startRecordSensorData(View view) {
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, accelerometerSensor,
+        activeSensor = sensorManager.getDefaultSensor(this.sensorType);
+        precision = preferences.getInt("precision", 2);
+        sensorManager.registerListener(this, activeSensor,
                 SensorManager.SENSOR_DELAY_GAME);
         stopButton.setEnabled(true);
 
@@ -89,13 +96,13 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
     @Nullable
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.fragment_accelerometer_monitor, container, false);
+        return inflater.inflate(R.layout.fragment_3axis_monitor, container, false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        preferences = getContext().getSharedPreferences(getResources().getString(R.string.accelerometer_config_fileName), MODE_PRIVATE);
+        preferences = getContext().getSharedPreferences(this.configFileName, MODE_PRIVATE);
 
         chart = (LineChart) getActivity().findViewById(R.id.accelerometerChart);
         Button startButton = (Button) getActivity().findViewById(R.id.startButton);
@@ -158,7 +165,10 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
         zEntries.add(new Entry(xEntries.size(), event.values[2]));
         //
         SimpleDateFormat sdf = new SimpleDateFormat(preferences.getString("dateFormat", "yyyy-MM"));
-        valuesToWrite.add(new ThreeAxisValue(sdf.format(new Date()), formatFloatValueByPrecision(event.values[0]), formatFloatValueByPrecision(event.values[1]), formatFloatValueByPrecision(event.values[2])).toString());
+        valuesToWrite.add(new ThreeAxisValue(sdf.format(new Date()),
+                Util.formatFloatValueByPrecision(event.values[0], precision),
+                Util.formatFloatValueByPrecision(event.values[1], precision),
+                Util.formatFloatValueByPrecision(event.values[2], precision)).toString());
 
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
         LineDataSet dataSetX = new LineDataSet(xEntries, "0");
@@ -166,7 +176,7 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
         dataSetX.setValueTextColor(Color.BLACK);
         dataSetX.setLineWidth(LINE_WIDTH);
         dataSetX.setDrawCircles(false);
-        LineDataSet dataSetY = new LineDataSet(yEntries, String.valueOf(accelerometerSensor.getMinDelay()));
+        LineDataSet dataSetY = new LineDataSet(yEntries, String.valueOf(activeSensor.getMinDelay()));
         dataSetY.setColor(Color.YELLOW);
         dataSetY.setValueTextColor(Color.BLACK);
         dataSetY.setLineWidth(LINE_WIDTH);
@@ -184,49 +194,9 @@ public class MonitorFragment extends Fragment implements SensorEventListener {
         chart.invalidate();
     }
 
-    private String formatFloatValueByPrecision(float value) {
-        NumberFormat formatter = NumberFormat.getInstance();
-        formatter.setMaximumFractionDigits(preferences.getInt("precision", 2));
-        return formatter.format(value);
-    }
-
-    private LineDataSet createSet() {
-
-        LineDataSet set = new LineDataSet(null, "Dynamic Data");
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setColor(ColorTemplate.getHoloBlue());
-        set.setCircleColor(Color.WHITE);
-        set.setLineWidth(2f);
-        set.setCircleRadius(4f);
-        set.setFillAlpha(65);
-        set.setFillColor(ColorTemplate.getHoloBlue());
-        set.setHighLightColor(Color.rgb(244, 117, 117));
-        set.setValueTextColor(Color.WHITE);
-        set.setValueTextSize(9f);
-        set.setDrawValues(false);
-        return set;
-    }
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
 
-    private void writeToFile(Context context, List<String> textList, boolean writeToExternal) {
-        File path;
-        if (writeToExternal) {
-            path = context.getExternalFilesDir(null);
-        } else {
-            path = context.getFilesDir();
-        }
-        try {
-            FileWriter writer = new FileWriter(new File(path, "a.txt"));
-            for (String line : textList) {
-                writer.write(line);
-            }
-            writer.close();
-        } catch (IOException e) {
-
-        }
-    }
 }

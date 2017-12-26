@@ -16,7 +16,7 @@ public class AccelerometerActivity extends BaseSensorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accelerometer);
-        super.init(Sensor.TYPE_ACCELEROMETER);
+        super.init(Sensor.TYPE_ACCELEROMETER, getString(R.string.accelerometer_config_fileName));
     }
 
 }

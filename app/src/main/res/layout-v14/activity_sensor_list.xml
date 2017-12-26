@@ -155,7 +155,6 @@
                     android:id="@+id/btn_gyroscope"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openGyroscopeActivity"
                     android:text="@string/sensor_gyroscope"/>
             </LinearLayout>
