@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,6 +37,7 @@ public class SensorListActivity extends AppCompatActivity {
     private Sensor proximitySensor;
     private Sensor humiditySensor;
     private Sensor rotationVectorSensor;
+    private int selectedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +93,18 @@ public class SensorListActivity extends AppCompatActivity {
         startActivity(accelerometerIntent);
     }
 
-    public void clickAccelerometerCheck(View view) {
-        CheckBox checkbox = (CheckBox) view.findViewById(R.id.check_accelerometer);
+    public void clickCheckBox(View view) {
+        if(((CheckBox) view).isChecked()) {
+            selectedCount++;
+        } else {
+            selectedCount--;
+        }
+        AppCompatImageButton recordButton = (AppCompatImageButton) this.findViewById(R.id.record_button);
+        if(selectedCount > 1) {
+            recordButton.setVisibility(View.VISIBLE);
+        } else {
+            recordButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void openTemperatureActivity(View view) {
