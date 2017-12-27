@@ -52,8 +52,9 @@
     <string name="sensor_info_power">Güç(mA)</string>
     <string name="sensor_info_minimum_delay">Min. Gecikme(us)</string>
     <string name="accelerometer_request_code">1</string>
-    <string name="accelerometer_config_fileName">AccelerometerConfig</string>
-    <string name="gyroscope_config_fileName">GyroscopeConfig</string>
+    <string name="accelerometer_config_fileName">Accelerometer</string>
+    <string name="gyroscope_config_fileName">Gyroscope</string>
+    <string name="gravity_config_fileName">Gravity</string>
     <string-array name="date_formats">
         <item>yyyy-MM-dd HH:mm:ss:SSS</item>
         <item>HH:mm:ss:SSS</item>

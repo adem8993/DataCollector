@@ -129,7 +129,7 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
 
     private void writeSensorDataToFile() {
         //TODO: External veya internal storage'a yazma desteği olmalı.
-        File path = getContext().getExternalFilesDir(null);
+        File path = getContext().getExternalFilesDir(this.configFileName + "/");
         //TODO: Dosya adını sharedPrefences'dan al.
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM HH:mm:ss");
 

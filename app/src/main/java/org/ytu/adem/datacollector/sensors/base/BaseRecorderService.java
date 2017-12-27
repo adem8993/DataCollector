@@ -55,9 +55,9 @@ public class BaseRecorderService extends IntentService implements SensorEventLis
 
     }
 
-    protected void writeSensorDataToFile(String fileName) {
+    protected void writeSensorDataToFile(String configFileName, String fileName) {
         //TODO: External veya internal storage'a yazma desteği olmalı.
-        File path = getExternalFilesDir(null);
+        File path = getExternalFilesDir(configFileName + "/");
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM HH:mm");
         fileName += "(" + sdf.format(new Date()) + ").txt";
         try {

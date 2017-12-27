@@ -1,5 +1,6 @@
-package org.ytu.adem.datacollector.sensors.accelerometer;
+package org.ytu.adem.datacollector.sensors.common;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,9 +37,16 @@ public class ConfigFragment extends Fragment {
     EditText precision;
     Spinner dateFormat;
     SharedPreferences preferences;
+    private int sensorType;
+    private String configFileName;
 
     public ConfigFragment() {
 
+    }
+
+    @SuppressLint("ValidFragment")
+    public ConfigFragment(String configFileName) {
+        this.configFileName = configFileName;
     }
 
     private void initFrequencyEditTextListener() {
@@ -136,32 +144,32 @@ public class ConfigFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_accelerometer_config, container, false);
+        return inflater.inflate(R.layout.fragment_config, container, false);
     }
 
     private void initFrequency() {
         frequency = (EditText) getActivity().findViewById(R.id.frequency);
         frequency.setFilters(new InputFilter[]{new InputFilterMinMax(0, 10)});
-        frequency.setText(String.valueOf(preferences.getInt("frequency", 0)));
+        frequency.setText(String.valueOf(preferences.getInt("frequency", 1)));
         initFrequencyEditTextListener();
     }
 
     private void initFileName() {
         fileName = (EditText) getActivity().findViewById(R.id.fileName);
-        fileName.setText(preferences.getString("fileName", "a"));
+        fileName.setText(preferences.getString("fileName", "Tanımsız"));
         initFileNameEditTextListener();
     }
 
     private void initMail() {
         mail = (EditText) getActivity().findViewById(R.id.mail);
-        mail.setText(preferences.getString(getResources().getString(R.string.shared_preferences_mail), "a"));
+        mail.setText(preferences.getString(getResources().getString(R.string.shared_preferences_mail), "test@mail.com"));
         initMailEditTextListener();
     }
 
     private void initPrecision() {
         precision = (EditText) getActivity().findViewById(R.id.precision);
         precision.setFilters(new InputFilter[]{new InputFilterMinMax(0, 5)});
-        precision.setText(String.valueOf(preferences.getInt("precision", 0)));
+        precision.setText(String.valueOf(preferences.getInt("precision", 2)));
         initPrecisionEditTextListener();
     }
 
@@ -199,7 +207,7 @@ public class ConfigFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        preferences = getContext().getSharedPreferences("AccelerometerConfig", MODE_PRIVATE);
+        preferences = getContext().getSharedPreferences(this.configFileName, MODE_PRIVATE);
         initFrequency();
         initFileName();
         initMail();

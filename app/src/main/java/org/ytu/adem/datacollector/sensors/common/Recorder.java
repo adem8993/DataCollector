@@ -1,4 +1,4 @@
-package org.ytu.adem.datacollector.sensors.accelerometer;
+package org.ytu.adem.datacollector.sensors.common;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,17 +18,26 @@ import java.util.Date;
  * Created by Adem on 21.11.2017.
  */
 
-public class AccelerometerRecorder extends BaseRecorderService {
-    public AccelerometerRecorder() {
-        super("AccelerometerRecorder");
+public class Recorder extends BaseRecorderService {
+    private int sensorType;
+    private String configFileName;
+
+    public Recorder() {
+        super("Recorder");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         sensorManager = (SensorManager) getApplicationContext()
                 .getSystemService(SENSOR_SERVICE);
-        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        this.sensorType = intent.getIntExtra("sensorType", 0);
+        this.configFileName = intent.getStringExtra("configFileName");
+        Sensor sensor = sensorManager.getDefaultSensor(sensorType);
+        preferences = getSharedPreferences(this.configFileName, MODE_PRIVATE);
+        frequency = preferences.getInt("frequency", 1);
+        precision = preferences.getInt("precision", 2);
+        fileDateFormat = new SimpleDateFormat(preferences.getString("dateFormat", "MM-dd"));
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         lastUpdate = System.currentTimeMillis();
         return START_STICKY;
     }
@@ -36,17 +45,14 @@ public class AccelerometerRecorder extends BaseRecorderService {
     @Override
     public void onCreate() {
         super.onCreate();
-        preferences = getSharedPreferences(getString(R.string.accelerometer_config_fileName), MODE_PRIVATE);
-        frequency = preferences.getInt("frequency", 1);
-        precision = preferences.getInt("precision", 2);
-        fileDateFormat = new SimpleDateFormat(preferences.getString("dateFormat", "MM-dd"));
+
     }
 
     @Override
     public void onDestroy() {
         sensorManager.unregisterListener(this);
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a");
-        writeSensorDataToFile(fileName);
+        writeSensorDataToFile(this.configFileName, fileName);
         checkAlarmActivation();
         super.onDestroy();
     }

@@ -11,22 +11,23 @@ import android.widget.ImageButton;
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.adapter.ViewPagerAdapter;
 import org.ytu.adem.datacollector.sensors.InfoDialog;
-import org.ytu.adem.datacollector.sensors.accelerometer.ConfigFragment;
+import org.ytu.adem.datacollector.sensors.common.ConfigFragment;
 import org.ytu.adem.datacollector.sensors.common.ThreeAxisMonitorFragment;
-import org.ytu.adem.datacollector.sensors.accelerometer.RecordFragment;
-import org.ytu.adem.datacollector.sensors.accelerometer.ScheduleFragment;
+import org.ytu.adem.datacollector.sensors.common.RecordFragment;
+import org.ytu.adem.datacollector.sensors.common.ScheduleFragment;
 
 /**
  * Created by Adem on 10.12.2017.
  */
 
 public class BaseSensorActivity extends FragmentActivity {
-    protected int[] tabIcons = {android.R.drawable.ic_menu_search, android.R.drawable.ic_menu_my_calendar, android.R.drawable.ic_menu_preferences, android.R.drawable.ic_menu_agenda};
+    protected int[] tabIcons = {android.R.drawable.ic_menu_search, android.R.drawable.ic_menu_my_calendar,
+            android.R.drawable.ic_menu_preferences, android.R.drawable.ic_menu_agenda};
     protected FragmentManager fm = getSupportFragmentManager();
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
-    protected  void init(int sensorType, String configFileName) {
+    protected void init(int sensorType, String configFileName) {
         setupViewPager(sensorType, configFileName);
         initTabLayout();
         initSensorInfo(sensorType);
@@ -36,9 +37,9 @@ public class BaseSensorActivity extends FragmentActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new ThreeAxisMonitorFragment(sensorType, configFileName), getString(R.string.monitor));
-        adapter.addFragment(new ScheduleFragment(), getString(R.string.schedule));
-        adapter.addFragment(new ConfigFragment(), getString(R.string.config));
-        adapter.addFragment(new RecordFragment(), getString(R.string.records));
+        adapter.addFragment(new ScheduleFragment(sensorType, configFileName), getString(R.string.schedule));
+        adapter.addFragment(new ConfigFragment(configFileName), getString(R.string.config));
+        adapter.addFragment(new RecordFragment(configFileName), getString(R.string.records));
         viewPager.setAdapter(adapter);
 
     }

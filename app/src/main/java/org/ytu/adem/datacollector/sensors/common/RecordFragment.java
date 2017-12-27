@@ -1,5 +1,6 @@
-package org.ytu.adem.datacollector.sensors.accelerometer;
+package org.ytu.adem.datacollector.sensors.common;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,9 +30,15 @@ public class RecordFragment extends Fragment {
 
     private FileObserver observer;
     private View v;
+    private String configFileName;
 
     public RecordFragment() {
 
+    }
+
+    @SuppressLint("ValidFragment")
+    public RecordFragment(String configFileName) {
+        this.configFileName = configFileName;
     }
 
     @Override
@@ -42,9 +49,9 @@ public class RecordFragment extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_accelerometer_record, container, false);
+        v = inflater.inflate(R.layout.fragment_record, container, false);
         ListView recordList = (ListView) v.findViewById(R.id.recordList);
-        File recordDirectory = getContext().getExternalFilesDir(null);
+        File recordDirectory = getContext().getExternalFilesDir(this.configFileName + "/");
         File[] files = recordDirectory.listFiles();
 
         final ArrayList<FileItem> fileItems = new ArrayList();

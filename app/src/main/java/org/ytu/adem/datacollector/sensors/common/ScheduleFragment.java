@@ -1,5 +1,6 @@
-package org.ytu.adem.datacollector.sensors.accelerometer;
+package org.ytu.adem.datacollector.sensors.common;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -7,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -23,9 +25,8 @@ import android.widget.TimePicker;
 
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.enums.Action;
-import org.ytu.adem.datacollector.enums.Sensor;
 import org.ytu.adem.datacollector.model.RecordLength;
-import org.ytu.adem.datacollector.sensors.Receiver;
+import org.ytu.adem.datacollector.sensors.common.Receiver;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -43,21 +44,29 @@ public class ScheduleFragment extends Fragment {
     private AlarmManager alarmManager;
     private Intent intentAlarm;
     private EditText startTime;
+    private int sensorType;
+    private String configFileName;
 
     public ScheduleFragment() {
 
     }
 
+    @SuppressLint("ValidFragment")
+    public ScheduleFragment(int sensorType, String configFileName) {
+        this.sensorType = sensorType;
+        this.configFileName = configFileName;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = getContext().getSharedPreferences(getResources().getString(R.string.accelerometer_config_fileName), MODE_PRIVATE);
+        preferences = getContext().getSharedPreferences(this.configFileName, MODE_PRIVATE);
         intentAlarm = new Intent(this.getActivity(), Receiver.class);
     }
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_accelerometer_schedule, container, false);
+        v = inflater.inflate(R.layout.fragment_schedule, container, false);
         startTime = (EditText) v.findViewById(R.id.startTime);
         final Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         final EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
@@ -67,6 +76,7 @@ public class ScheduleFragment extends Fragment {
         recordLengthHour.setText(String.valueOf(getRecordLength().getHour()));
         recordLengthMinute.setText(String.valueOf(getRecordLength().getMinute()));
         active.setChecked(preferences.getBoolean(getString(R.string.shared_preferences_scheduleActive), false));
+        changeScheduleStatus(active.isChecked(), startTime, recordFrequency, recordLengthHour, recordLengthMinute);
         active.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,10 +196,10 @@ public class ScheduleFragment extends Fragment {
 
     private void cancelAlarm() {
         PendingIntent startingPendingIntent = PendingIntent.getBroadcast(this.getActivity(),
-                Sensor.ACCELEROMETER.ordinal(),
+                this.sensorType,
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT);
         PendingIntent stoppingPendingIntent = PendingIntent.getBroadcast(this.getActivity(),
-                100 - Sensor.ACCELEROMETER.ordinal(),
+                100 - this.sensorType,
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT);
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         if (startingPendingIntent != null) {
@@ -222,18 +232,20 @@ public class ScheduleFragment extends Fragment {
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
         //we will write the code to send SMS inside onRecieve() method pf Alarmreciever class
-        intentAlarm.putExtra("sensor", Sensor.ACCELEROMETER.toString());
+        intentAlarm.putExtra("sensorName", getSensorName(sensorType));
+        intentAlarm.putExtra("sensorType", sensorType);
         intentAlarm.putExtra("action", Action.START.toString());
+        intentAlarm.putExtra("configFileName", this.configFileName);
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         //set the alarm for particular time
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
-                Sensor.ACCELEROMETER.ordinal(),
+                sensorType,
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT));
         intentAlarm.putExtra("action", Action.STOP.toString());
         cal_alarm.add(Calendar.MINUTE, preferences.getInt(getString(R.string.shared_preferences_recordLength), 0));
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
-                100 - Sensor.ACCELEROMETER.ordinal(),
+                100 - sensorType,
                 intentAlarm, PendingIntent.FLAG_ONE_SHOT));
     }
 
@@ -251,5 +263,47 @@ public class ScheduleFragment extends Fragment {
                 editText.setText(timeText, TextView.BufferType.EDITABLE);
             }
         };
+    }
+
+    private String getSensorName(int sensorType) {
+        String sensorName;
+        switch (sensorType) {
+            case Sensor.TYPE_ACCELEROMETER:
+                sensorName = getString(R.string.sensor_accelerometer);
+                break;
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                sensorName = getString(R.string.sensor_linear_acceleration);
+                break;
+            case Sensor.TYPE_GRAVITY:
+                sensorName = getString(R.string.sensor_gravity);
+                break;
+            case Sensor.TYPE_GYROSCOPE:
+                sensorName = getString(R.string.sensor_gyroscope);
+                break;
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                sensorName = getString(R.string.sensor_relative_humidity);
+                break;
+            case Sensor.TYPE_LIGHT:
+                sensorName = getString(R.string.sensor_light);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                sensorName = getString(R.string.sensor_magnetic_field);
+                break;
+            case Sensor.TYPE_PRESSURE:
+                sensorName = getString(R.string.sensor_pressure);
+                break;
+            case Sensor.TYPE_PROXIMITY:
+                sensorName = getString(R.string.sensor_proximity);
+                break;
+            case Sensor.TYPE_ROTATION_VECTOR:
+                sensorName = getString(R.string.sensor_rotation_vector);
+                break;
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                sensorName = getString(R.string.sensor_ambient_temperature);
+                break;
+            default:
+                sensorName = "Bilinmeyen";
+        }
+        return sensorName;
     }
 }
