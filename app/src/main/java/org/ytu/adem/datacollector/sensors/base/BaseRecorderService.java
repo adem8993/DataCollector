@@ -62,9 +62,11 @@ public class BaseRecorderService extends IntentService implements SensorEventLis
         fileName += "(" + sdf.format(new Date()) + ").txt";
         try {
             FileWriter writer = new FileWriter(new File(path, fileName));
+            StringBuilder sb = new StringBuilder();
             for (String line : valuesToWrite) {
-                writer.write(line + "\n");
+                sb.append(line + "\n");
             }
+            writer.write(sb.toString());
             writer.close();
             showToast("Sensör verileri dosyaya yazıldı.\nDosya adı: " + fileName);
         } catch (IOException e) {

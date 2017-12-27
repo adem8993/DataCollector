@@ -8,7 +8,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -26,10 +25,11 @@ import android.widget.TimePicker;
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.enums.Action;
 import org.ytu.adem.datacollector.model.RecordLength;
-import org.ytu.adem.datacollector.sensors.common.Receiver;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -213,10 +213,9 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void scheduleAlarm() {
-        String alarmStartTime = startTime.getText().toString();
-        String[] alarmTimeParts = alarmStartTime.split(":");
-        int alarmHour = Integer.parseInt(alarmTimeParts[0]);
-        int alarmMinute = Integer.parseInt(alarmTimeParts[1]);
+        Map<String, Integer> timeMap = getTimeHourAndMinute(startTime.getText().toString());
+        int alarmHour = timeMap.get("hour");
+        int alarmMinute = timeMap.get("minute");
         Date currentDate = new Date();//initializes to now
         Calendar cal_alarm = Calendar.getInstance();
         Calendar cal_now = Calendar.getInstance();
@@ -248,7 +247,17 @@ public class ScheduleFragment extends Fragment {
     }
 
     private Dialog createDialog(EditText editText) {
-        return new TimePickerDialog(getActivity(), getTimePickerListener(editText), 1, 1, true);
+        int hour;
+        int minute;
+        if (startTime.getText().length() > 0) {
+            Map<String, Integer> timeMap = getTimeHourAndMinute(startTime.getText().toString());
+            hour = timeMap.get("hour");
+            minute = timeMap.get("minute");
+        } else {
+            hour = 1;
+            minute = 1;
+        }
+        return new TimePickerDialog(getActivity(), getTimePickerListener(editText), hour, minute, true);
     }
 
     private TimePickerDialog.OnTimeSetListener getTimePickerListener(final EditText editText) {
@@ -261,6 +270,15 @@ public class ScheduleFragment extends Fragment {
                 editText.setText(timeText, TextView.BufferType.EDITABLE);
             }
         };
+    }
+
+    private Map<String, Integer> getTimeHourAndMinute(String time) {
+        Map<String, Integer> timeMap = new HashMap<>();
+        if (time.isEmpty()) return timeMap;
+        String[] timeParts = time.split(":");
+        timeMap.put("hour", Integer.parseInt(timeParts[0]));
+        timeMap.put("minute", Integer.parseInt(timeParts[1]));
+        return timeMap;
     }
 
 }
