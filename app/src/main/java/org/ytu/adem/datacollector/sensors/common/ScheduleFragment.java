@@ -232,10 +232,8 @@ public class ScheduleFragment extends Fragment {
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
         //we will write the code to send SMS inside onRecieve() method pf Alarmreciever class
-        intentAlarm.putExtra("sensorName", getSensorName(sensorType));
         intentAlarm.putExtra("sensorType", sensorType);
         intentAlarm.putExtra("action", Action.START.toString());
-        intentAlarm.putExtra("configFileName", this.configFileName);
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         //set the alarm for particular time
 
@@ -265,45 +263,4 @@ public class ScheduleFragment extends Fragment {
         };
     }
 
-    private String getSensorName(int sensorType) {
-        String sensorName;
-        switch (sensorType) {
-            case Sensor.TYPE_ACCELEROMETER:
-                sensorName = getString(R.string.sensor_accelerometer);
-                break;
-            case Sensor.TYPE_LINEAR_ACCELERATION:
-                sensorName = getString(R.string.sensor_linear_acceleration);
-                break;
-            case Sensor.TYPE_GRAVITY:
-                sensorName = getString(R.string.sensor_gravity);
-                break;
-            case Sensor.TYPE_GYROSCOPE:
-                sensorName = getString(R.string.sensor_gyroscope);
-                break;
-            case Sensor.TYPE_RELATIVE_HUMIDITY:
-                sensorName = getString(R.string.sensor_relative_humidity);
-                break;
-            case Sensor.TYPE_LIGHT:
-                sensorName = getString(R.string.sensor_light);
-                break;
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                sensorName = getString(R.string.sensor_magnetic_field);
-                break;
-            case Sensor.TYPE_PRESSURE:
-                sensorName = getString(R.string.sensor_pressure);
-                break;
-            case Sensor.TYPE_PROXIMITY:
-                sensorName = getString(R.string.sensor_proximity);
-                break;
-            case Sensor.TYPE_ROTATION_VECTOR:
-                sensorName = getString(R.string.sensor_rotation_vector);
-                break;
-            case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                sensorName = getString(R.string.sensor_ambient_temperature);
-                break;
-            default:
-                sensorName = "Bilinmeyen";
-        }
-        return sensorName;
-    }
 }

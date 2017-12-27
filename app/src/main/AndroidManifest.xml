@@ -45,7 +45,13 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".sensors.common.Recorder"
+            android:name=".sensors.accelerometer.AccelerometerRecorder"
+            android:exported="false" />
+        <service
+            android:name=".sensors.gravity.GravityRecorder"
+            android:exported="false" />
+        <service
+            android:name=".sensors.gyroscope.GyroscopeRecorder"
             android:exported="false" />
 
     </application>
