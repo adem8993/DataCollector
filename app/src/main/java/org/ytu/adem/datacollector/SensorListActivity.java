@@ -1,9 +1,14 @@
 package org.ytu.adem.datacollector;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
@@ -24,6 +29,9 @@ import org.ytu.adem.datacollector.sensors.proximity.ProximityActivity;
 import org.ytu.adem.datacollector.sensors.rotationVector.RotationVectorActivity;
 import org.ytu.adem.datacollector.sensors.temperature.TemperatureActivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SensorListActivity extends AppCompatActivity {
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
@@ -37,6 +45,7 @@ public class SensorListActivity extends AppCompatActivity {
     private Sensor proximitySensor;
     private Sensor humiditySensor;
     private Sensor rotationVectorSensor;
+    private Map<Integer, Boolean> selectedSensors = new HashMap<>();
     private int selectedCount = 0;
 
     @Override
@@ -44,6 +53,7 @@ public class SensorListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_list);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        initMultipleRecordButton();
         getSensors();
         setButtonStates();
     }
@@ -76,6 +86,32 @@ public class SensorListActivity extends AppCompatActivity {
         hideSensorCheckboxAndButton(rotationVectorSensor, (Button) findViewById(R.id.btn_rotation_vector), (CheckBox) findViewById(R.id.check_rotation_vector));
     }
 
+    private void initMultipleRecordButton() {
+        final AppCompatImageButton recordButton = (AppCompatImageButton) findViewById(R.id.record_button);
+        recordButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                toggleRecordButton(recordButton);
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void toggleRecordButton(AppCompatImageButton recordButton) {
+        ColorStateList stateList = recordButton.getBackgroundTintList();
+        int color = stateList.getDefaultColor();
+        if(color == getColor(android.R.color.holo_red_light)) {
+            recordButton.setBackgroundTintList(ColorStateList.valueOf(getColor(android.R.color.holo_green_light)));
+            recordButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+            enableAllCheckbox();
+        } else {
+            recordButton.setBackgroundTintList(ColorStateList.valueOf(getColor(android.R.color.holo_red_light)));
+            recordButton.setImageResource(R.drawable.ic_stop_black_24dp);
+            disableAllCheckbox();
+        }
+    }
+
     private void hideSensorCheckboxAndButton(Sensor sensor, Button button, CheckBox checkbox) {
         if (!isSensorAvailable(sensor)) {
             button.setVisibility(View.GONE);
@@ -91,6 +127,35 @@ public class SensorListActivity extends AppCompatActivity {
     public void openAccelerometerActivity(View view) {
         Intent accelerometerIntent = new Intent(this, AccelerometerActivity.class);
         startActivity(accelerometerIntent);
+    }
+
+    private void disableAllCheckbox() {
+        ((CheckBox) findViewById(R.id.check_accelerometer)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_rotation_vector)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_relative_humidity)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_proximity)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_pressure)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_magnetic_field)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_light)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_gyroscope)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_gravity)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_temperature)).setEnabled(false);
+        ((CheckBox) findViewById(R.id.check_linear_acceleration)).setEnabled(false);
+    }
+
+
+    private void enableAllCheckbox() {
+        ((CheckBox) findViewById(R.id.check_accelerometer)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_rotation_vector)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_relative_humidity)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_proximity)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_pressure)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_magnetic_field)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_light)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_gyroscope)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_gravity)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_temperature)).setEnabled(true);
+        ((CheckBox) findViewById(R.id.check_linear_acceleration)).setEnabled(true);
     }
 
     public void clickCheckBox(View view) {
@@ -130,12 +195,6 @@ public class SensorListActivity extends AppCompatActivity {
     public void openLightActivity(View view) {
         Intent lightIntent = new Intent(this, LightActivity.class);
         startActivity(lightIntent);
-    }
-
-    public void performFileSearch() {
-        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        i.addCategory(Intent.CATEGORY_DEFAULT);
-        startActivityForResult(Intent.createChooser(i, "Choose directory"), 9999);
     }
 
     public void openMagneticFieldActivity(View view) {

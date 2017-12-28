@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.40"
-                    android:backgroundTint="@android:color/holo_red_light"
+                    android:backgroundTint="@android:color/holo_green_light"
                     android:visibility="invisible"
                     app:srcCompat="@drawable/ic_play_arrow_black_24dp"/>
 
