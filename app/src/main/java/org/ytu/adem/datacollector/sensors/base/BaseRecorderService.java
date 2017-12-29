@@ -41,7 +41,7 @@ public class BaseRecorderService extends IntentService implements SensorEventLis
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent ıntent) {
+    protected void onHandleIntent(@Nullable Intent intent) {
 
     }
 

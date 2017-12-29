@@ -17,9 +17,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import org.ytu.adem.datacollector.sensors.MultipleRecorder;
 import org.ytu.adem.datacollector.sensors.acceleration.AccelerationActivity;
 import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerActivity;
 import org.ytu.adem.datacollector.sensors.gravity.GravityActivity;
+import org.ytu.adem.datacollector.sensors.gravity.GravityRecorder;
 import org.ytu.adem.datacollector.sensors.gyroscope.GyroscopeActivity;
 import org.ytu.adem.datacollector.sensors.humidity.HumidityActivity;
 import org.ytu.adem.datacollector.sensors.light.LightActivity;
@@ -92,16 +94,32 @@ public class SensorListActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                toggleRecordButton(recordButton);
+                ColorStateList stateList = recordButton.getBackgroundTintList();
+                int color = stateList.getDefaultColor();
+                boolean stopped = color == getColor(android.R.color.holo_red_light);
+                toggleRecordButton(recordButton, color == getColor(android.R.color.holo_red_light));
+                if (stopped) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
             }
         });
     }
 
+    private void startRecording() {
+        Intent multipleIntent = new Intent(this, MultipleRecorder.class);
+        startService(multipleIntent);
+    }
+
+    private void stopRecording() {
+        Intent multipleIntent = new Intent(this, MultipleRecorder.class);
+        stopService(multipleIntent);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void toggleRecordButton(AppCompatImageButton recordButton) {
-        ColorStateList stateList = recordButton.getBackgroundTintList();
-        int color = stateList.getDefaultColor();
-        if(color == getColor(android.R.color.holo_red_light)) {
+    private void toggleRecordButton(AppCompatImageButton recordButton, boolean stopped) {
+        if (stopped) {
             recordButton.setBackgroundTintList(ColorStateList.valueOf(getColor(android.R.color.holo_green_light)));
             recordButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
             enableAllCheckbox();
@@ -159,13 +177,13 @@ public class SensorListActivity extends AppCompatActivity {
     }
 
     public void clickCheckBox(View view) {
-        if(((CheckBox) view).isChecked()) {
+        if (((CheckBox) view).isChecked()) {
             selectedCount++;
         } else {
             selectedCount--;
         }
         AppCompatImageButton recordButton = (AppCompatImageButton) this.findViewById(R.id.record_button);
-        if(selectedCount > 1) {
+        if (selectedCount > 1) {
             recordButton.setVisibility(View.VISIBLE);
         } else {
             recordButton.setVisibility(View.INVISIBLE);

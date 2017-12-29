@@ -8,10 +8,8 @@ public class ThreeAxisValue {
     private String x;
     private String y;
     private String z;
-    private String date;
 
-    public ThreeAxisValue(String date, String x, String y, String z) {
-        this.date = date;
+    public ThreeAxisValue(String x, String y, String z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -19,6 +17,6 @@ public class ThreeAxisValue {
 
     @Override
     public String toString() {
-        return date + "; " + x + "; " + y + "; " + z;
+        return x + "; " + y + "; " + z;
     }
 }

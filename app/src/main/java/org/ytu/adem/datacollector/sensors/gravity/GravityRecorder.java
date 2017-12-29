@@ -57,10 +57,11 @@ public class GravityRecorder extends BaseRecorderService {
         long actualTime = event.timestamp;
         if (actualTime - lastUpdate < ONE_SECOND_NANO / frequency) return;
         lastUpdate = actualTime;
-        valuesToWrite.add(new ThreeAxisValue(fileDateFormat.format(new Date()),
-                Util.formatFloatValueByPrecision(event.values[0], precision),
-                Util.formatFloatValueByPrecision(event.values[1], precision),
-                Util.formatFloatValueByPrecision(event.values[2], precision)).
-                toString());
+        String valuesWithDate = fileDateFormat.format(new Date()) + " || " +
+                new ThreeAxisValue(
+                        Util.formatFloatValueByPrecision(event.values[0], precision),
+                        Util.formatFloatValueByPrecision(event.values[1], precision),
+                        Util.formatFloatValueByPrecision(event.values[2], precision)).toString();
+        valuesToWrite.add(valuesWithDate);
     }
 }

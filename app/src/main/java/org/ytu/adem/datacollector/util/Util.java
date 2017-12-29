@@ -10,6 +10,7 @@ public class Util {
     public static String formatFloatValueByPrecision(float value, int precision) {
         NumberFormat formatter = NumberFormat.getInstance();
         formatter.setMaximumFractionDigits(precision);
+        formatter.setMinimumFractionDigits(precision);
         return formatter.format(value);
     }
 }

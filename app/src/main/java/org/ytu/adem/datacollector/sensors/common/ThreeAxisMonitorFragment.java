@@ -135,6 +135,8 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
 
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a") + "(" + sdf.format(new Date()) + ").txt";
         try {
+            File file = new File(path, fileName);
+            file.setReadOnly();
             FileWriter writer = new FileWriter(new File(path, fileName));
             for (String line : valuesToWrite) {
                 writer.write(line + "\n");
@@ -165,11 +167,12 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
         zEntries.add(new Entry(xEntries.size(), event.values[2]));
         //
         SimpleDateFormat sdf = new SimpleDateFormat(preferences.getString("dateFormat", "yyyy-MM"));
-        valuesToWrite.add(new ThreeAxisValue(sdf.format(new Date()),
-                Util.formatFloatValueByPrecision(event.values[0], precision),
-                Util.formatFloatValueByPrecision(event.values[1], precision),
-                Util.formatFloatValueByPrecision(event.values[2], precision)).toString());
-
+        String valuesWithDate = sdf.format(new Date()) + " || " +
+                new ThreeAxisValue(
+                        Util.formatFloatValueByPrecision(event.values[0], precision),
+                        Util.formatFloatValueByPrecision(event.values[1], precision),
+                        Util.formatFloatValueByPrecision(event.values[2], precision)).toString();
+        valuesToWrite.add(valuesWithDate);
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
         LineDataSet dataSetX = new LineDataSet(xEntries, "0");
         dataSetX.setColor(Color.BLUE);
