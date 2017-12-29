@@ -31,6 +31,7 @@ import org.ytu.adem.datacollector.sensors.proximity.ProximityActivity;
 import org.ytu.adem.datacollector.sensors.rotationVector.RotationVectorActivity;
 import org.ytu.adem.datacollector.sensors.temperature.TemperatureActivity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class SensorListActivity extends AppCompatActivity {
     private Sensor proximitySensor;
     private Sensor humiditySensor;
     private Sensor rotationVectorSensor;
-    private Map<Integer, Boolean> selectedSensors = new HashMap<>();
+    private Map<Integer, String> selectedSensors = new HashMap<>();
     private int selectedCount = 0;
 
     @Override
@@ -109,6 +110,7 @@ public class SensorListActivity extends AppCompatActivity {
 
     private void startRecording() {
         Intent multipleIntent = new Intent(this, MultipleRecorder.class);
+        multipleIntent.putExtra("selectedSensors", (Serializable) selectedSensors);
         startService(multipleIntent);
     }
 
@@ -177,9 +179,12 @@ public class SensorListActivity extends AppCompatActivity {
     }
 
     public void clickCheckBox(View view) {
+
         if (((CheckBox) view).isChecked()) {
+            setSelectedSensors(view.getId(), true);
             selectedCount++;
         } else {
+            setSelectedSensors(view.getId(), false);
             selectedCount--;
         }
         AppCompatImageButton recordButton = (AppCompatImageButton) this.findViewById(R.id.record_button);
@@ -187,6 +192,26 @@ public class SensorListActivity extends AppCompatActivity {
             recordButton.setVisibility(View.VISIBLE);
         } else {
             recordButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setSelectedSensors(int checkboxId, boolean isChecked) {
+        switch (checkboxId) {
+            case R.id.check_accelerometer:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_ACCELEROMETER, getString(R.string.accelerometer_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_ACCELEROMETER);
+                }
+                break;
+            case R.id.check_gravity:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_GRAVITY, getString(R.string.gravity_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_GRAVITY);
+                }
+                break;
+
         }
     }
 

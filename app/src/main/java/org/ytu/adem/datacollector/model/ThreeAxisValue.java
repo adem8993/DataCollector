@@ -17,6 +17,6 @@ public class ThreeAxisValue {
 
     @Override
     public String toString() {
-        return x + "; " + y + "; " + z;
+        return String.format("%1$5s", x) + "; " + String.format("%1$5s", y) + "; " + String.format("%1$5s", z);
     }
 }
