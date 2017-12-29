@@ -1,6 +1,7 @@
 package org.ytu.adem.datacollector.sensors;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -43,23 +44,16 @@ public class MultipleRecorder extends BaseRecorderService {
                 .getSystemService(SENSOR_SERVICE);
         selectedSensors = (Map<Integer, String>) intent.getSerializableExtra("selectedSensors");
         Iterator selectedIterator = selectedSensors.entrySet().iterator();
-        while(selectedIterator.hasNext()) {
+        while (selectedIterator.hasNext()) {
             Map.Entry selectedSensor = (Map.Entry) selectedIterator.next();
-            Sensor sensor = sensorManager.getDefaultSensor((int) selectedSensor.getKey());
+            int sensorType = (int) selectedSensor.getKey();
+            Sensor sensor = sensorManager.getDefaultSensor(sensorType);
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            sensorList.add((int) selectedSensor.getKey());
+            sensorList.add((int) sensorType);
+            lastUpdate[sensorType] = System.currentTimeMillis();
+            SharedPreferences sensorPreferences = getSharedPreferences(configFileName, MODE_PRIVATE);
+            frequency[sensorType] = sensorPreferences.getInt(getString(R.string.shared_preferences_frequency), 1);
         }
-        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        Sensor gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        Sensor gravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        sensorList.add(Sensor.TYPE_ACCELEROMETER);
-        sensorList.add(Sensor.TYPE_GYROSCOPE);
-        sensorList.add(Sensor.TYPE_GRAVITY);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, gravity, SensorManager.SENSOR_DELAY_NORMAL);
-        lastUpdate[Sensor.TYPE_ACCELEROMETER] = System.currentTimeMillis();
-        lastUpdate[Sensor.TYPE_GYROSCOPE] = System.currentTimeMillis();
         return START_STICKY;
     }
 
@@ -71,11 +65,8 @@ public class MultipleRecorder extends BaseRecorderService {
     @Override
     public void onCreate() {
         super.onCreate();
-        configFileName = getString(R.string.accelerometer_config_fileName);
+        configFileName = getString(R.string.multiple_config_fileName);
         preferences = getSharedPreferences(configFileName, MODE_PRIVATE);
-        frequency[Sensor.TYPE_ACCELEROMETER] = 7;
-        frequency[Sensor.TYPE_GRAVITY] = 5;
-        frequency[Sensor.TYPE_GYROSCOPE] = 3;
         precision = preferences.getInt("precision", 2);
         fileDateFormat = new SimpleDateFormat(preferences.getString("dateFormat", "MM-dd"));
     }

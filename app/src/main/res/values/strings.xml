@@ -52,9 +52,18 @@
     <string name="sensor_info_power">Güç(mA)</string>
     <string name="sensor_info_minimum_delay">Min. Gecikme(us)</string>
     <string name="accelerometer_request_code">1</string>
+    <string name="multiple_config_fileName">Multiple</string>
     <string name="accelerometer_config_fileName">Accelerometer</string>
     <string name="gyroscope_config_fileName">Gyroscope</string>
     <string name="gravity_config_fileName">Gravity</string>
+    <string name="temperature_config_fileName">Temparature</string>
+    <string name="light_config_fileName">Light</string>
+    <string name="linear_acceleration_config_fileName">LinearAcceleration</string>
+    <string name="magnetic_field_config_fileName">MagneticField</string>
+    <string name="pressure_config_fileName">Pressure</string>
+    <string name="proximity_config_fileName">Proximity</string>
+    <string name="humidity_config_fileName">Humidity</string>
+    <string name="rotation_config_fileName">Rotation</string>
     <string-array name="date_formats">
         <item>yyyy-MM-dd HH:mm:ss:SSS</item>
         <item>HH:mm:ss:SSS</item>

@@ -211,7 +211,71 @@ public class SensorListActivity extends AppCompatActivity {
                     selectedSensors.remove(Sensor.TYPE_GRAVITY);
                 }
                 break;
-
+            case R.id.check_gyroscope:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_GYROSCOPE, getString(R.string.gyroscope_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_GYROSCOPE);
+                }
+                break;
+            case R.id.check_temperature:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_AMBIENT_TEMPERATURE, getString(R.string.temperature_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_AMBIENT_TEMPERATURE);
+                }
+                break;
+            case R.id.check_light:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_LIGHT, getString(R.string.light_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_LIGHT);
+                }
+                break;
+            case R.id.check_linear_acceleration:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_LINEAR_ACCELERATION, getString(R.string.linear_acceleration_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_LINEAR_ACCELERATION);
+                }
+                break;
+            case R.id.check_magnetic_field:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_MAGNETIC_FIELD, getString(R.string.magnetic_field_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_MAGNETIC_FIELD);
+                }
+                break;
+            case R.id.check_pressure:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_PRESSURE, getString(R.string.pressure_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_PRESSURE);
+                }
+                break;
+            case R.id.check_proximity:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_PROXIMITY, getString(R.string.proximity_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_PROXIMITY);
+                }
+                break;
+            case R.id.check_relative_humidity:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_RELATIVE_HUMIDITY, getString(R.string.humidity_config_fileName));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_RELATIVE_HUMIDITY);
+                }
+                break;
+            case R.id.check_rotation_vector:
+                if (isChecked) {
+                    selectedSensors.put(Sensor.TYPE_ROTATION_VECTOR, getString(R.string.sensor_rotation_vector));
+                } else {
+                    selectedSensors.remove(Sensor.TYPE_ROTATION_VECTOR);
+                }
+                break;
+            default:
+                break;
         }
     }
 
