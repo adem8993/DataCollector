@@ -114,7 +114,7 @@ public class ConfigFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
                     SharedPreferences.Editor editor = preferences.edit();
-                    editor.putInt("precision", Integer.valueOf(s.toString()));
+                    editor.putInt(getString(R.string.shared_preferences_precision), Integer.valueOf(s.toString()));
                     editor.commit();
                 }
             }

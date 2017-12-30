@@ -13,4 +13,13 @@ public class Util {
         formatter.setMinimumFractionDigits(precision);
         return formatter.format(value);
     }
+
+    public static String prepareFileHeader(String sensorType, int frequency, int precision) {
+        return "/******************************************" + "\n" +
+                "***  Sensör Tipi: " + sensorType + "\n" +
+                "***  Frekans: " + frequency + "\n" +
+                "***  Hassasiyet : " + precision + "\n" +
+                "*******************************************/" + "\n";
+    }
+
 }

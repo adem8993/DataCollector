@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.model.ThreeAxisValue;
@@ -19,16 +21,19 @@ import java.util.Date;
 
 public class AccelerometerRecorder extends BaseRecorderService {
     private String configFileName;
+    private String fileHeaderText;
 
     public AccelerometerRecorder() {
         super("AccelerometerRecorder");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         sensorManager = (SensorManager) getApplicationContext()
                 .getSystemService(SENSOR_SERVICE);
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        fileHeaderText = Util.prepareFileHeader(getString(R.string.sensor_accelerometer), frequency, precision);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         lastUpdate = System.currentTimeMillis();
         return START_STICKY;
@@ -48,7 +53,7 @@ public class AccelerometerRecorder extends BaseRecorderService {
     public void onDestroy() {
         sensorManager.unregisterListener(this);
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a");
-        writeSensorDataToFile(configFileName, fileName);
+        writeSensorDataToFile(configFileName, fileName, fileHeaderText);
         super.onDestroy();
     }
 

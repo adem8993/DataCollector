@@ -7,12 +7,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.widget.Toast;
-
-import org.ytu.adem.datacollector.R;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -55,14 +55,17 @@ public class BaseRecorderService extends IntentService implements SensorEventLis
 
     }
 
-    protected void writeSensorDataToFile(String configFileName, String fileName) {
+    protected void writeSensorDataToFile(String configFileName, String fileName, String header) {
         //TODO: External veya internal storage'a yazma desteği olmalı.
         File path = getExternalFilesDir(configFileName + "/");
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM HH:mm");
         fileName += "(" + sdf.format(new Date()) + ").txt";
         try {
-            FileWriter writer = new FileWriter(new File(path, fileName));
+            File file = new File(path, fileName);
+            file.setReadOnly();
+            FileWriter writer = new FileWriter(file);
             StringBuilder sb = new StringBuilder();
+            sb.append(header);
             for (String line : valuesToWrite) {
                 sb.append(line + "\n");
             }

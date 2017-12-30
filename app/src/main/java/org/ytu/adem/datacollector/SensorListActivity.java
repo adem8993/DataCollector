@@ -2,8 +2,6 @@ package org.ytu.adem.datacollector;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
@@ -12,16 +10,13 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 
-import org.ytu.adem.datacollector.sensors.MultipleRecorder;
+import org.ytu.adem.datacollector.sensors.multiple.MultipleRecorder;
 import org.ytu.adem.datacollector.sensors.acceleration.AccelerationActivity;
 import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerActivity;
 import org.ytu.adem.datacollector.sensors.gravity.GravityActivity;
-import org.ytu.adem.datacollector.sensors.gravity.GravityRecorder;
 import org.ytu.adem.datacollector.sensors.gyroscope.GyroscopeActivity;
 import org.ytu.adem.datacollector.sensors.humidity.HumidityActivity;
 import org.ytu.adem.datacollector.sensors.light.LightActivity;

@@ -11,6 +11,11 @@ import org.ytu.adem.datacollector.enums.Action;
 import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerRecorder;
 import org.ytu.adem.datacollector.sensors.gravity.GravityRecorder;
 import org.ytu.adem.datacollector.sensors.gyroscope.GyroscopeRecorder;
+import org.ytu.adem.datacollector.sensors.multiple.MultipleRecorder;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Adem on 16.10.2017.
@@ -18,12 +23,14 @@ import org.ytu.adem.datacollector.sensors.gyroscope.GyroscopeRecorder;
 
 public class Receiver extends BroadcastReceiver {
     private Context context;
+    private Map<Integer, String> selectedSensors = new HashMap<>();
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         String action = intent.getStringExtra("action");
         int sensorType = intent.getIntExtra("sensorType", 0);
+        selectedSensors = (Map<Integer, String>) intent.getSerializableExtra("selectedSensors");
         Boolean actionStart = initActionStart(action);
         if (actionStart == null) {
             Toast.makeText(context, String.format("Action not defined", sensorType, action), Toast.LENGTH_LONG).show();
@@ -98,6 +105,16 @@ public class Receiver extends BroadcastReceiver {
                 break;
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
                 sensorName = context.getResources().getString(R.string.sensor_ambient_temperature);
+                break;
+            case Sensor.TYPE_ALL:
+                Intent multipleIntent = new Intent(context, MultipleRecorder.class);
+                multipleIntent.putExtra("selectedSensors", (Serializable) selectedSensors);
+                sensorName = context.getResources().getString(R.string.sensor_all);
+                if (actionStart) {
+                    context.startService(multipleIntent);
+                } else {
+                    context.stopService(multipleIntent);
+                }
                 break;
             default:
                 sensorName = "Bilinmeyen";

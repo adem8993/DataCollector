@@ -48,7 +48,7 @@ public class GravityRecorder extends BaseRecorderService {
     public void onDestroy() {
         sensorManager.unregisterListener(this);
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "Tanımsız");
-        writeSensorDataToFile(configFileName, fileName);
+        writeSensorDataToFile(configFileName, fileName, "");
         super.onDestroy();
     }
 

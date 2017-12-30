@@ -173,7 +173,6 @@
                     android:id="@+id/btn_light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openLightActivity"
                     android:text="@string/sensor_light"/>
             </LinearLayout>

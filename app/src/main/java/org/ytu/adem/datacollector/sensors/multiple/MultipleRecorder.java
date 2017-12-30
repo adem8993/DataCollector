@@ -1,4 +1,4 @@
-package org.ytu.adem.datacollector.sensors;
+package org.ytu.adem.datacollector.sensors.multiple;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,7 +75,7 @@ public class MultipleRecorder extends BaseRecorderService {
     public void onDestroy() {
         sensorManager.unregisterListener(this);
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a");
-        writeSensorDataToFile(configFileName, fileName);
+        writeSensorDataToFile(configFileName, fileName, "");
         super.onDestroy();
     }
 

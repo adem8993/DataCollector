@@ -1,6 +1,7 @@
 <resources>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
+    <string name="power_consumption">Güç tüketimi: %1$.1fmA</string>
     <string name="error_required">Boş bırakılamaz.</string>
     <string name="app_name">Veri Toplayıcı</string>
     <string name="sensor_accelerometer">İvmeölçer</string>
@@ -13,7 +14,8 @@
     <string name="sensor_pressure">Basınç</string>
     <string name="sensor_proximity">Yakınlık</string>
     <string name="sensor_relative_humidity">Nem</string>
-    <string name="sensor_rotation_vector">Devir</string>
+    <string name="sensor_rotation_vector">Dönüş Vektörü</string>
+    <string name="sensor_all">Birden çok</string>
     <string name="title_activity_accelerometer">AccelerometerActivity</string>
     <string name="monitor">İzle</string>
     <string name="schedule">Zamanla</string>
@@ -71,8 +73,10 @@
         <item>dd.MM.YYYY</item>
     </string-array>
     <string name="default_date_format">dd.MM.YYYY</string>
+    <string name="shared_preferences_sensorName">sensorName</string>
     <string name="shared_preferences_fileName">fileName</string>
     <string name="shared_preferences_frequency">frequency</string>
+    <string name="shared_preferences_precision">precision</string>
     <string name="shared_preferences_startTime">startTime</string>
     <string name="shared_preferences_recordLength">recordLength</string>
     <string name="shared_preferences_mail">mail</string>

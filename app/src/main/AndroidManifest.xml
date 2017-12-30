@@ -54,7 +54,7 @@
             android:name=".sensors.gyroscope.GyroscopeRecorder"
             android:exported="false" />
         <service
-            android:name=".sensors.MultipleRecorder"
+            android:name=".sensors.multiple.MultipleRecorder"
             android:exported="false" />
 
     </application>
