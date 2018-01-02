@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,15 +47,17 @@ public class ScheduleFragment extends Fragment {
     private EditText startTime;
     private int sensorType;
     private String configFileName;
+    private boolean isMultiple;
 
     public ScheduleFragment() {
 
     }
 
     @SuppressLint("ValidFragment")
-    public ScheduleFragment(int sensorType, String configFileName) {
+    public ScheduleFragment(int sensorType, String configFileName, boolean isMultiple) {
         this.sensorType = sensorType;
         this.configFileName = configFileName;
+        this.isMultiple = isMultiple;
     }
 
     @Override
@@ -66,7 +69,9 @@ public class ScheduleFragment extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_schedule, container, false);
+        Context darkTheme = new ContextThemeWrapper(getActivity(), R.style.ThemeOverlay_AppCompat_Dark);
+        LayoutInflater localInflater = inflater.cloneInContext(darkTheme);
+        v = localInflater.inflate(R.layout.fragment_schedule, container, false);
         startTime = (EditText) v.findViewById(R.id.startTime);
         final Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         final EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
@@ -86,6 +91,9 @@ public class ScheduleFragment extends Fragment {
         initEditTextListener(startTime);
         initRecordFrequencies();
         initScheduleInfo(active.isChecked());
+        if (this.isMultiple) {
+            initMultipleSensorEditTextListener();
+        }
         return v;
     }
 
@@ -103,6 +111,7 @@ public class ScheduleFragment extends Fragment {
 
     private void initRecordFrequencies() {
         Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
+        recordFrequency.setEnabled(false);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
                 R.array.schedule_frequencies, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -122,6 +131,21 @@ public class ScheduleFragment extends Fragment {
         } else if (recordLengthHour.getText().length() > 0) {
             scheduleInfo.setText(getString(R.string.schedule_fill_required_fields));
         }
+    }
+
+    private void initMultipleSensorEditTextListener() {
+        EditText sensorListText = (EditText) v.findViewById(R.id.sensorList);
+        sensorListText.setVisibility(View.VISIBLE);
+        sensorListText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createMultipleSensorSelectDialog();
+            }
+        });
+    }
+
+    private void createMultipleSensorSelectDialog() {
+
     }
 
     private void initEditTextListener(final EditText editText) {

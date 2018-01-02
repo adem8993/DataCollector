@@ -115,7 +115,6 @@
                     android:id="@+id/btn_temperature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openTemperatureActivity"
                     android:text="@string/sensor_ambient_temperature"/>
             </LinearLayout>
@@ -192,7 +191,6 @@
                     android:id="@+id/btn_linear_acceleration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openAccelerationActivity"
                     android:text="@string/sensor_linear_acceleration"/>
             </LinearLayout>
@@ -212,7 +210,6 @@
                     android:id="@+id/btn_magnetic_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openMagneticFieldActivity"
                     android:text="@string/sensor_magnetic_field"/>
             </LinearLayout>
@@ -232,7 +229,6 @@
                     android:id="@+id/btn_pressure"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openPressureActivity"
                     android:text="@string/sensor_pressure"/>
             </LinearLayout>
@@ -252,7 +248,6 @@
                     android:id="@+id/btn_proximity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openProximityActivity"
                     android:text="@string/sensor_proximity"/>
             </LinearLayout>
@@ -272,7 +267,6 @@
                     android:id="@+id/btn_relative_humidity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openHumidityActivity"
                     android:text="@string/sensor_relative_humidity"/>
             </LinearLayout>
@@ -292,7 +286,6 @@
                     android:id="@+id/btn_rotation_vector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:onClick="openRotationVectorActivity"
                     android:text="@string/sensor_rotation_vector"/>
             </LinearLayout>

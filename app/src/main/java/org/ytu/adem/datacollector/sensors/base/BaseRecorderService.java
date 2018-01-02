@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
+import org.ytu.adem.datacollector.R;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -76,6 +78,12 @@ public class BaseRecorderService extends IntentService implements SensorEventLis
             showToast("Veriler dosyaya yazılamadı. Dosya Adı:");
             System.out.println(e);
         }
+    }
+
+    protected void removeScheduleActiveFlag() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(getString(R.string.shared_preferences_scheduleActive));
+        editor.commit();
     }
 
     protected void showToast(String message) {

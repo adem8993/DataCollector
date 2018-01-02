@@ -31,22 +31,23 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class ConfigFragment extends Fragment {
-    EditText frequency;
-    EditText fileName;
-    EditText mail;
-    EditText precision;
-    Spinner dateFormat;
-    SharedPreferences preferences;
-    private int sensorType;
+    private EditText frequency;
+    private EditText fileName;
+    private EditText mail;
+    private EditText precision;
+    private Spinner dateFormat;
+    private SharedPreferences preferences;
     private String configFileName;
+    private boolean isMultiple;
 
     public ConfigFragment() {
 
     }
 
     @SuppressLint("ValidFragment")
-    public ConfigFragment(String configFileName) {
+    public ConfigFragment(String configFileName, boolean isMultiple) {
         this.configFileName = configFileName;
+        this.isMultiple = isMultiple;
     }
 
     private void initFrequencyEditTextListener() {
@@ -149,9 +150,13 @@ public class ConfigFragment extends Fragment {
 
     private void initFrequency() {
         frequency = (EditText) getActivity().findViewById(R.id.frequency);
-        frequency.setFilters(new InputFilter[]{new InputFilterMinMax(0, 10)});
-        frequency.setText(String.valueOf(preferences.getInt("frequency", 1)));
-        initFrequencyEditTextListener();
+        if (this.isMultiple) {
+            frequency.setVisibility(View.GONE);
+        } else {
+            frequency.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+            frequency.setText(String.valueOf(preferences.getInt("frequency", 1)));
+            initFrequencyEditTextListener();
+        }
     }
 
     private void initFileName() {

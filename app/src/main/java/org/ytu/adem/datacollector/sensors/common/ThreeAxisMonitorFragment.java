@@ -27,6 +27,11 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.model.ThreeAxisValue;
+import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerRecorder;
+import org.ytu.adem.datacollector.sensors.gravity.GravityRecorder;
+import org.ytu.adem.datacollector.sensors.gyroscope.GyroscopeRecorder;
+import org.ytu.adem.datacollector.sensors.multiple.MultipleRecorder;
+import org.ytu.adem.datacollector.util.ServiceUtil;
 import org.ytu.adem.datacollector.util.Util;
 
 import java.io.File;
@@ -79,8 +84,11 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
         sensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     private void startRecordSensorData(View view) {
+        if (ServiceUtil.isMyServiceRunning(this.getActivity(), findServiceRecorderClass(this.sensorType))) {
+            Toast.makeText(getContext(), findSensorNameByType(this.sensorType) + " servisi çalışırken başlatılamaz.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         activeSensor = sensorManager.getDefaultSensor(this.sensorType);
         frequency = preferences.getInt(getString(R.string.shared_preferences_frequency), 1);
         precision = preferences.getInt(getString(R.string.shared_preferences_precision), 2);
@@ -212,6 +220,69 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    private Class findServiceRecorderClass(int sensorType) {
+        switch (sensorType) {
+            case Sensor.TYPE_ACCELEROMETER:
+                return AccelerometerRecorder.class;
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                break;
+            case Sensor.TYPE_GRAVITY:
+                return GravityRecorder.class;
+            case Sensor.TYPE_GYROSCOPE:
+                return GyroscopeRecorder.class;
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                break;
+            case Sensor.TYPE_LIGHT:
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                break;
+            case Sensor.TYPE_PRESSURE:
+                break;
+            case Sensor.TYPE_PROXIMITY:
+                break;
+            case Sensor.TYPE_ROTATION_VECTOR:
+                break;
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                break;
+            case Sensor.TYPE_ALL:
+                return MultipleRecorder.class;
+            default:
+        }
+        return AccelerometerRecorder.class;
+    }
+
+    private String findSensorNameByType(int sensorType) {
+
+        switch (sensorType) {
+            case Sensor.TYPE_ACCELEROMETER:
+                return getString(R.string.sensor_accelerometer);
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                break;
+            case Sensor.TYPE_GRAVITY:
+                return getString(R.string.sensor_gravity);
+            case Sensor.TYPE_GYROSCOPE:
+                return getString(R.string.sensor_gyroscope);
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                break;
+            case Sensor.TYPE_LIGHT:
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                break;
+            case Sensor.TYPE_PRESSURE:
+                break;
+            case Sensor.TYPE_PROXIMITY:
+                break;
+            case Sensor.TYPE_ROTATION_VECTOR:
+                break;
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                break;
+            case Sensor.TYPE_ALL:
+                return getString(R.string.sensor_multiple);
+            default:
+        }
+        return "Bilinmeyen";
     }
 
 }

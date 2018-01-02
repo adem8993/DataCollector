@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+                android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
     android:layout_marginLeft="@dimen/activity_vertical_margin">
 
     <TextView
@@ -88,5 +89,23 @@
             android:ems="8"
             android:maxLength="2" />
     </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/sensorListLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recordLengthHourLabel"
+        android:hint="@string/schedule_sensor_list">
+
+        <EditText
+            android:id="@+id/sensorList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:visibility="gone"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </android.support.design.widget.TextInputLayout>
+
 
 </RelativeLayout>

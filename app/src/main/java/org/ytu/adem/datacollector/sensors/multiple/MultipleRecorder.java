@@ -26,9 +26,10 @@ import java.util.Map;
 
 public class MultipleRecorder extends BaseRecorderService {
     private String configFileName;
-    private long[] lastUpdate = new long[10];
-    private int[] frequency = new int[10];
-    private String[] tempValuesToWrite = new String[10];
+    private long[] lastUpdate = new long[64];
+    private int[] frequency = new int[64];
+    private List<Integer> frequencies = new ArrayList<>();
+    private String[] tempValuesToWrite = new String[64];
     private LinkedList<Integer> sensorList = new LinkedList<Integer>();
     private Map<Integer, String> selectedSensors = new HashMap<>();
     Iterator iterator;
@@ -51,8 +52,10 @@ public class MultipleRecorder extends BaseRecorderService {
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             sensorList.add((int) sensorType);
             lastUpdate[sensorType] = System.currentTimeMillis();
-            SharedPreferences sensorPreferences = getSharedPreferences(configFileName, MODE_PRIVATE);
-            frequency[sensorType] = sensorPreferences.getInt(getString(R.string.shared_preferences_frequency), 1);
+            SharedPreferences sensorPreferences = getSharedPreferences(selectedSensor.getValue().toString(), MODE_PRIVATE);
+            int activeFrequency = sensorPreferences.getInt(getString(R.string.shared_preferences_frequency), 1);
+            frequencies.add(activeFrequency);
+            frequency[sensorType] = activeFrequency;
         }
         return START_STICKY;
     }
@@ -75,7 +78,8 @@ public class MultipleRecorder extends BaseRecorderService {
     public void onDestroy() {
         sensorManager.unregisterListener(this);
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a");
-        writeSensorDataToFile(configFileName, fileName, "");
+
+        writeSensorDataToFile(configFileName, fileName, Util.prepareMultipleFileHeader(sensorList, frequencies, precision));
         super.onDestroy();
     }
 

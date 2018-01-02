@@ -46,8 +46,8 @@ public class BaseSensorActivity extends FragmentActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new ThreeAxisMonitorFragment(sensorType, configFileName), getString(R.string.monitor));
-        adapter.addFragment(new ScheduleFragment(sensorType, configFileName), getString(R.string.schedule));
-        adapter.addFragment(new ConfigFragment(configFileName), getString(R.string.config));
+        adapter.addFragment(new ScheduleFragment(sensorType, configFileName ,false), getString(R.string.schedule));
+        adapter.addFragment(new ConfigFragment(configFileName, false), getString(R.string.config));
         adapter.addFragment(new RecordFragment(configFileName), getString(R.string.records));
         viewPager.setAdapter(adapter);
     }

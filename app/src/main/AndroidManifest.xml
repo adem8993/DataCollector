@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.ytu.adem.datacollector">
+          package="org.ytu.adem.datacollector">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".SensorListActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
@@ -34,28 +34,37 @@
             android:name=".sensors.gravity.GravityActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.multiple.MultipleActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <receiver
             android:name=".sensors.common.Receiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
             </intent-filter>
         </receiver>
+
         <service
             android:name=".sensors.accelerometer.AccelerometerRecorder"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":AccelerometerRecorder"/>
         <service
             android:name=".sensors.gravity.GravityRecorder"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":GravityRecorder"/>
         <service
             android:name=".sensors.gyroscope.GyroscopeRecorder"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":GyroscopeRecorder"/>
         <service
             android:name=".sensors.multiple.MultipleRecorder"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":MultipleRecorder"/>
 
     </application>
 </manifest>

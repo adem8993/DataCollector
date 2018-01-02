@@ -27,7 +27,6 @@ public class AccelerometerRecorder extends BaseRecorderService {
         super("AccelerometerRecorder");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         sensorManager = (SensorManager) getApplicationContext()
@@ -54,6 +53,7 @@ public class AccelerometerRecorder extends BaseRecorderService {
         sensorManager.unregisterListener(this);
         String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "a");
         writeSensorDataToFile(configFileName, fileName, fileHeaderText);
+        removeScheduleActiveFlag();
         super.onDestroy();
     }
 

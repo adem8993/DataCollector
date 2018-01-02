@@ -6,7 +6,7 @@
     <string name="app_name">Veri Toplayıcı</string>
     <string name="sensor_accelerometer">İvmeölçer</string>
     <string name="sensor_ambient_temperature">Sıcaklık</string>
-    <string name="sensor_gravity">Yer çekimi</string>
+    <string name="sensor_gravity">Yer Çekimi</string>
     <string name="sensor_gyroscope">Jiroskop</string>
     <string name="sensor_light">Işık</string>
     <string name="sensor_linear_acceleration">Lineer İvme</string>
@@ -16,10 +16,12 @@
     <string name="sensor_relative_humidity">Nem</string>
     <string name="sensor_rotation_vector">Dönüş Vektörü</string>
     <string name="sensor_all">Birden çok</string>
+    <string name="sensor_multiple">Çoklu Kayıt</string>
     <string name="title_activity_accelerometer">AccelerometerActivity</string>
     <string name="monitor">İzle</string>
     <string name="schedule">Zamanla</string>
     <string name="records">Kayıtlar</string>
+    <string name="records_history">Geçmiş Kayıtlar</string>
     <string name="schedule_start_time">Başlangıç Saati</string>
     <string name="schedule_not_activated">Zamanlanmış kayıt işlemi aktif değil.</string>
     <string name="schedule_fill_required_fields">Zorunlu alanları doldurun.</string>
@@ -27,11 +29,12 @@
     <string name="schedule_record_frequency">Kayıt Sıklığı</string>
     <string name="schedule_record_length_hour">Kayıt Süresi(Saat)</string>
     <string name="schedule_record_length_minute">Kayıt Süresi(Dakika)</string>
-    <string name="schedule_record_list">Geçmiş Kayıtlar</string>
+    <string name="schedule_sensor_list">Sensör seçiniz.</string>
     <string name="record_started">%1$s sensörü için kayıt işlemi başladı.</string>
     <string-array name="schedule_frequencies">
         <item>Bir kere</item>
-        <item>Hergün</item>
+        <item>Her gün</item>
+        <item>Haftada bir</item>
     </string-array>
     <string-array name="schedule_frequeny_values">
         <item>0</item>

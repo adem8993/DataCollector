@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import org.ytu.adem.datacollector.sensors.multiple.MultipleActivity;
 import org.ytu.adem.datacollector.sensors.multiple.MultipleRecorder;
 import org.ytu.adem.datacollector.sensors.acceleration.AccelerationActivity;
 import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerActivity;
@@ -52,6 +53,7 @@ public class SensorListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sensor_list);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         initMultipleRecordButton();
+        initMultipleConfigButton();
         getSensors();
         setButtonStates();
     }
@@ -82,6 +84,21 @@ public class SensorListActivity extends AppCompatActivity {
         hideSensorCheckboxAndButton(proximitySensor, (Button) findViewById(R.id.btn_proximity), (CheckBox) findViewById(R.id.check_proximity));
         hideSensorCheckboxAndButton(humiditySensor, (Button) findViewById(R.id.btn_relative_humidity), (CheckBox) findViewById(R.id.check_relative_humidity));
         hideSensorCheckboxAndButton(rotationVectorSensor, (Button) findViewById(R.id.btn_rotation_vector), (CheckBox) findViewById(R.id.check_rotation_vector));
+    }
+
+    private void initMultipleConfigButton() {
+        final AppCompatImageButton configButton = (AppCompatImageButton) findViewById(R.id.config_button);
+        configButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openMultipleConfigActivity();
+            }
+        });
+    }
+
+    private void openMultipleConfigActivity() {
+        Intent multipleIntent = new Intent(this, MultipleActivity.class);
+        startActivity(multipleIntent);
     }
 
     private void initMultipleRecordButton() {
