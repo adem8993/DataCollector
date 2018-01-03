@@ -2,23 +2,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-                android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-    android:layout_marginLeft="@dimen/activity_vertical_margin">
+    android:orientation="vertical"
+                android:layout_margin="@android:color/holo_green_dark"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    >
 
     <TextView
         android:id="@+id/scheduleInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/activity_horizontal_margin" />
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_alignParentStart="true" />
 
 
-    <CheckBox
+    <Switch
         android:id="@+id/active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="false"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:checked="false"
         android:text="Aktif"
         android:layout_below="@+id/scheduleInfo"
@@ -28,13 +31,15 @@
         android:id="@+id/recordFrequencyLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/active"
         android:text="@string/schedule_record_frequency" />
 
     <Spinner
         android:id="@+id/recordFrequency"
         android:layout_width="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/recordFrequencyLabel"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true" />
@@ -45,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/schedule_start_time"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_alignTop="@+id/recordFrequencyLabel"
         android:layout_toEndOf="@+id/recordLengthHourLabel">
 
@@ -61,6 +67,8 @@
         android:id="@+id/recordLengthHourLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+
         android:layout_below="@+id/startTimeLabel"
         android:hint="@string/schedule_record_length_hour">
 
@@ -78,6 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/startTimeLabel"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_toRightOf="@+id/recordLengthHourLabel"
         android:hint="@string/schedule_record_length_minute">
 

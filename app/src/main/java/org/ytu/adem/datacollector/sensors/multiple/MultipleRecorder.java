@@ -25,6 +25,7 @@ import java.util.Map;
  */
 
 public class MultipleRecorder extends BaseRecorderService {
+    Iterator iterator;
     private String configFileName;
     private long[] lastUpdate = new long[64];
     private int[] frequency = new int[64];
@@ -32,7 +33,6 @@ public class MultipleRecorder extends BaseRecorderService {
     private String[] tempValuesToWrite = new String[64];
     private LinkedList<Integer> sensorList = new LinkedList<Integer>();
     private Map<Integer, String> selectedSensors = new HashMap<>();
-    Iterator iterator;
     private List recordedSensors = new ArrayList();
 
     public MultipleRecorder() {
@@ -43,19 +43,21 @@ public class MultipleRecorder extends BaseRecorderService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         sensorManager = (SensorManager) getApplicationContext()
                 .getSystemService(SENSOR_SERVICE);
-        selectedSensors = (Map<Integer, String>) intent.getSerializableExtra("selectedSensors");
-        Iterator selectedIterator = selectedSensors.entrySet().iterator();
-        while (selectedIterator.hasNext()) {
-            Map.Entry selectedSensor = (Map.Entry) selectedIterator.next();
-            int sensorType = (int) selectedSensor.getKey();
-            Sensor sensor = sensorManager.getDefaultSensor(sensorType);
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            sensorList.add((int) sensorType);
-            lastUpdate[sensorType] = System.currentTimeMillis();
-            SharedPreferences sensorPreferences = getSharedPreferences(selectedSensor.getValue().toString(), MODE_PRIVATE);
-            int activeFrequency = sensorPreferences.getInt(getString(R.string.shared_preferences_frequency), 1);
-            frequencies.add(activeFrequency);
-            frequency[sensorType] = activeFrequency;
+        if (intent != null) {
+            selectedSensors = (Map<Integer, String>) intent.getSerializableExtra("selectedSensors");
+            Iterator selectedIterator = selectedSensors.entrySet().iterator();
+            while (selectedIterator.hasNext()) {
+                Map.Entry selectedSensor = (Map.Entry) selectedIterator.next();
+                int sensorType = (int) selectedSensor.getKey();
+                Sensor sensor = sensorManager.getDefaultSensor(sensorType);
+                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorList.add((int) sensorType);
+                lastUpdate[sensorType] = System.currentTimeMillis();
+                SharedPreferences sensorPreferences = getSharedPreferences(selectedSensor.getValue().toString(), MODE_PRIVATE);
+                int activeFrequency = sensorPreferences.getInt(getString(R.string.shared_preferences_frequency), 1);
+                frequencies.add(activeFrequency);
+                frequency[sensorType] = activeFrequency;
+            }
         }
         return START_STICKY;
     }

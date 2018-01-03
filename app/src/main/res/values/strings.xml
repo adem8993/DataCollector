@@ -22,6 +22,8 @@
     <string name="schedule">Zamanla</string>
     <string name="records">Kayıtlar</string>
     <string name="records_history">Geçmiş Kayıtlar</string>
+    <string name="schedule_active">Aktif</string>
+    <string name="schedule_passive">Pasif</string>
     <string name="schedule_start_time">Başlangıç Saati</string>
     <string name="schedule_not_activated">Zamanlanmış kayıt işlemi aktif değil.</string>
     <string name="schedule_fill_required_fields">Zorunlu alanları doldurun.</string>

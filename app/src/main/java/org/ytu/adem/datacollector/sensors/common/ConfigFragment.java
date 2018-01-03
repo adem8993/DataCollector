@@ -181,8 +181,8 @@ public class ConfigFragment extends Fragment {
     private void initDateFormat() {
         dateFormat = (Spinner) getActivity().findViewById(R.id.dateFormat);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
-                R.array.date_formats, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.date_formats, android.R.layout.preference_category);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         dateFormat.setAdapter(adapter);
         dateFormat.setSelection(((ArrayAdapter<String>) dateFormat.getAdapter()).getPosition(preferences.getString("dateFormat", getString(R.string.default_date_format))));
         initDateFormatSpinnerListener();

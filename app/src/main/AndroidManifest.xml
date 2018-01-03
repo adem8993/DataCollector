@@ -50,21 +50,13 @@
         </receiver>
 
         <service
-            android:name=".sensors.accelerometer.AccelerometerRecorder"
-            android:exported="false"
-            android:process=":AccelerometerRecorder"/>
+            android:name=".sensors.accelerometer.AccelerometerRecorder"/>
         <service
-            android:name=".sensors.gravity.GravityRecorder"
-            android:exported="false"
-            android:process=":GravityRecorder"/>
+            android:name=".sensors.gravity.GravityRecorder"/>
         <service
-            android:name=".sensors.gyroscope.GyroscopeRecorder"
-            android:exported="false"
-            android:process=":GyroscopeRecorder"/>
+            android:name=".sensors.gyroscope.GyroscopeRecorder"/>
         <service
-            android:name=".sensors.multiple.MultipleRecorder"
-            android:exported="false"
-            android:process=":MultipleRecorder"/>
+            android:name=".sensors.multiple.MultipleRecorder"/>
 
     </application>
 </manifest>

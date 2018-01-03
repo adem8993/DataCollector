@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -69,14 +70,12 @@ public class ScheduleFragment extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Context darkTheme = new ContextThemeWrapper(getActivity(), R.style.ThemeOverlay_AppCompat_Dark);
-        LayoutInflater localInflater = inflater.cloneInContext(darkTheme);
-        v = localInflater.inflate(R.layout.fragment_schedule, container, false);
+        v = inflater.inflate(R.layout.fragment_schedule, container, false);
         startTime = (EditText) v.findViewById(R.id.startTime);
         final Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         final EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
         final EditText recordLengthMinute = (EditText) v.findViewById(R.id.recordLengthMinute);
-        final CheckBox active = (CheckBox) v.findViewById(R.id.active);
+        final Switch active = (Switch) v.findViewById(R.id.active);
         startTime.setText(preferences.getString(getResources().getString(R.string.shared_preferences_startTime), null));
         recordLengthHour.setText(String.valueOf(getRecordLength().getHour()));
         recordLengthMinute.setText(String.valueOf(getRecordLength().getMinute()));
@@ -158,7 +157,7 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void clickActiveCheckbox(Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
-        CheckBox checkbox = (CheckBox) v.findViewById(R.id.active);
+        Switch checkbox = (Switch) v.findViewById(R.id.active);
 
         if (checkbox.isChecked()) {
             if (checkRequiredFields(recordLengthHour, recordLengthMinute)) {
@@ -167,10 +166,13 @@ public class ScheduleFragment extends Fragment {
                 editor.putInt(getString(R.string.shared_preferences_recordLength), getRecordLengthValue(Integer.valueOf(recordLengthHour.getText().toString()), Integer.valueOf(recordLengthMinute.getText().toString())));
                 editor.commit();
                 changeScheduleStatus(true, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
+                checkbox.setText(getString(R.string.schedule_active));
             } else {
                 checkbox.setChecked(false);
+                checkbox.setText(getString(R.string.schedule_passive));
             }
         } else {
+            checkbox.setText(getString(R.string.schedule_passive));
             changeScheduleStatus(false, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
         }
         initScheduleInfo(checkbox.isChecked());
