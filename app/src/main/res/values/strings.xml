@@ -60,6 +60,7 @@
     <string name="sensor_info_minimum_delay">Min. Gecikme(us)</string>
     <string name="accelerometer_request_code">1</string>
     <string name="multiple_config_fileName">Multiple</string>
+    <string name="acceleration_config_fileName">Accelerations</string>
     <string name="accelerometer_config_fileName">Accelerometer</string>
     <string name="gyroscope_config_fileName">Gyroscope</string>
     <string name="gravity_config_fileName">Gravity</string>

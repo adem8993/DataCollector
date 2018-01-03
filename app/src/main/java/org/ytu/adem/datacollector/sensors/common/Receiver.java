@@ -8,10 +8,18 @@ import android.widget.Toast;
 
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.enums.Action;
+import org.ytu.adem.datacollector.sensors.acceleration.AccelerationRecorder;
 import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerRecorder;
 import org.ytu.adem.datacollector.sensors.gravity.GravityRecorder;
 import org.ytu.adem.datacollector.sensors.gyroscope.GyroscopeRecorder;
+import org.ytu.adem.datacollector.sensors.humidity.HumidityRecorder;
+import org.ytu.adem.datacollector.sensors.light.LightRecorder;
+import org.ytu.adem.datacollector.sensors.magneticField.MagneticFieldRecorder;
 import org.ytu.adem.datacollector.sensors.multiple.MultipleRecorder;
+import org.ytu.adem.datacollector.sensors.pressure.PressureRecorder;
+import org.ytu.adem.datacollector.sensors.proximity.ProximityRecorder;
+import org.ytu.adem.datacollector.sensors.rotationVector.RotationVectorRecorder;
+import org.ytu.adem.datacollector.sensors.temperature.TemperatureRecorder;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -54,70 +62,65 @@ public class Receiver extends BroadcastReceiver {
 
     private String startAction(int sensorType, boolean actionStart) {
         String sensorName;
+        Intent intent = null;
         switch (sensorType) {
             case Sensor.TYPE_ACCELEROMETER:
-                Intent accelerometerIntent = new Intent(context, AccelerometerRecorder.class);
+                intent = new Intent(context, AccelerometerRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_accelerometer);
-                if (actionStart) {
-                    context.startService(accelerometerIntent);
-                } else {
-                    context.stopService(accelerometerIntent);
-                }
                 break;
             case Sensor.TYPE_LINEAR_ACCELERATION:
+                intent = new Intent(context, AccelerationRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_linear_acceleration);
                 break;
             case Sensor.TYPE_GRAVITY:
-                Intent gravityIntent = new Intent(context, GravityRecorder.class);
+                intent = new Intent(context, GravityRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_gravity);
-                if (actionStart) {
-                    context.startService(gravityIntent);
-                } else {
-                    context.stopService(gravityIntent);
-                }
                 break;
             case Sensor.TYPE_GYROSCOPE:
-                Intent gyroscopeIntent = new Intent(context, GyroscopeRecorder.class);
+                intent = new Intent(context, GyroscopeRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_gyroscope);
-                if (actionStart) {
-                    context.startService(gyroscopeIntent);
-                } else {
-                    context.stopService(gyroscopeIntent);
-                }
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
+                intent = new Intent(context, HumidityRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_relative_humidity);
                 break;
             case Sensor.TYPE_LIGHT:
+                intent = new Intent(context, LightRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_light);
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
+                intent = new Intent(context, MagneticFieldRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_magnetic_field);
                 break;
             case Sensor.TYPE_PRESSURE:
+                intent = new Intent(context, PressureRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_pressure);
                 break;
             case Sensor.TYPE_PROXIMITY:
+                intent = new Intent(context, ProximityRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_proximity);
                 break;
             case Sensor.TYPE_ROTATION_VECTOR:
+                intent = new Intent(context, RotationVectorRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_rotation_vector);
                 break;
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                intent = new Intent(context, TemperatureRecorder.class);
                 sensorName = context.getResources().getString(R.string.sensor_ambient_temperature);
                 break;
             case Sensor.TYPE_ALL:
-                Intent multipleIntent = new Intent(context, MultipleRecorder.class);
-                multipleIntent.putExtra("selectedSensors", (Serializable) selectedSensors);
+                intent = new Intent(context, MultipleRecorder.class);
+                intent.putExtra("selectedSensors", (Serializable) selectedSensors);
                 sensorName = context.getResources().getString(R.string.sensor_all);
-                if (actionStart) {
-                    context.startService(multipleIntent);
-                } else {
-                    context.stopService(multipleIntent);
-                }
                 break;
             default:
                 sensorName = "Bilinmeyen";
+                break;
+        }
+        if (actionStart) {
+            context.startService(intent);
+        } else {
+            context.stopService(intent);
         }
         return sensorName;
     }

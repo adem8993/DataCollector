@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.ytu.adem.datacollector">
+    package="org.ytu.adem.datacollector">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -17,11 +17,43 @@
             android:name=".SensorListActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".sensors.acceleration.AccelerationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.light.LightActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.humidity.HumidityActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.magneticField.MagneticFieldActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.pressure.PressureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.proximity.ProximityActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.rotationVector.RotationVectorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sensors.temperature.TemperatureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".sensors.accelerometer.AccelerometerActivity"
             android:screenOrientation="portrait"
@@ -44,19 +76,23 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".sensors.accelerometer.AccelerometerRecorder"/>
-        <service
-            android:name=".sensors.gravity.GravityRecorder"/>
-        <service
-            android:name=".sensors.gyroscope.GyroscopeRecorder"/>
-        <service
-            android:name=".sensors.multiple.MultipleRecorder"/>
+        <service android:name=".sensors.acceleration.AccelerationRecorder" />
+        <service android:name=".sensors.accelerometer.AccelerometerRecorder" />
+        <service android:name=".sensors.gravity.GravityRecorder" />
+        <service android:name=".sensors.gyroscope.GyroscopeRecorder" />
+        <service android:name=".sensors.humidity.HumidityRecorder" />
+        <service android:name=".sensors.light.LightRecorder" />
+        <service android:name=".sensors.magneticField.MagneticFieldRecorder" />
+        <service android:name=".sensors.pressure.PressureRecorder" />
+        <service android:name=".sensors.proximity.ProximityRecorder" />
+        <service android:name=".sensors.rotationVector.RotationVectorRecorder" />
+        <service android:name=".sensors.temperature.TemperatureRecorder" />s
+        <service android:name=".sensors.multiple.MultipleRecorder" />
 
     </application>
 </manifest>
