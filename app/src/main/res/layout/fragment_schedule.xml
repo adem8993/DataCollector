@@ -103,6 +103,7 @@
         android:id="@+id/sensorListLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/recordLengthHourLabel"
         android:hint="@string/schedule_sensor_list">
 

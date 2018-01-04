@@ -265,19 +265,19 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
             case Sensor.TYPE_GYROSCOPE:
                 return getString(R.string.sensor_gyroscope);
             case Sensor.TYPE_RELATIVE_HUMIDITY:
-                break;
+                return getString(R.string.sensor_relative_humidity);
             case Sensor.TYPE_LIGHT:
-                break;
+                return getString(R.string.sensor_light);
             case Sensor.TYPE_MAGNETIC_FIELD:
-                break;
+                return getString(R.string.sensor_magnetic_field);
             case Sensor.TYPE_PRESSURE:
-                break;
+                return getString(R.string.sensor_pressure);
             case Sensor.TYPE_PROXIMITY:
-                break;
+                return getString(R.string.sensor_proximity);
             case Sensor.TYPE_ROTATION_VECTOR:
-                break;
+                return getString(R.string.sensor_rotation_vector);
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                break;
+                return getString(R.string.sensor_ambient_temperature);
             case Sensor.TYPE_ALL:
                 return getString(R.string.sensor_multiple);
             default:

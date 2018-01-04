@@ -31,7 +31,7 @@
     <string name="schedule_record_frequency">Kayıt Sıklığı</string>
     <string name="schedule_record_length_hour">Kayıt Süresi(Saat)</string>
     <string name="schedule_record_length_minute">Kayıt Süresi(Dakika)</string>
-    <string name="schedule_sensor_list">Sensör seçiniz.</string>
+    <string name="schedule_sensor_list">Sensörler</string>
     <string name="record_started">%1$s sensörü için kayıt işlemi başladı.</string>
     <string-array name="schedule_frequencies">
         <item>Bir kere</item>

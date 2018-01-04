@@ -6,12 +6,17 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.SparseBooleanArray;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +28,17 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.ytu.adem.datacollector.R;
 import org.ytu.adem.datacollector.enums.Action;
 import org.ytu.adem.datacollector.model.RecordLength;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -46,9 +54,13 @@ public class ScheduleFragment extends Fragment {
     private AlarmManager alarmManager;
     private Intent intentAlarm;
     private EditText startTime;
+    private EditText sensorList;
     private int sensorType;
     private String configFileName;
     private boolean isMultiple;
+    private AlertDialog multipleSelectionDialog;
+    private List<Sensor> activeSensorList = new ArrayList<>();
+    private Map<Integer, String> selectedSensors = new HashMap<>();
 
     public ScheduleFragment() {
 
@@ -75,6 +87,7 @@ public class ScheduleFragment extends Fragment {
         final Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         final EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
         final EditText recordLengthMinute = (EditText) v.findViewById(R.id.recordLengthMinute);
+        sensorList = (EditText) v.findViewById(R.id.sensorList);
         final Switch active = (Switch) v.findViewById(R.id.active);
         startTime.setText(preferences.getString(getResources().getString(R.string.shared_preferences_startTime), null));
         recordLengthHour.setText(String.valueOf(getRecordLength().getHour()));
@@ -135,16 +148,104 @@ public class ScheduleFragment extends Fragment {
     private void initMultipleSensorEditTextListener() {
         EditText sensorListText = (EditText) v.findViewById(R.id.sensorList);
         sensorListText.setVisibility(View.VISIBLE);
+        multipleSelectionDialog = createMultipleSensorSelectDialog();
         sensorListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createMultipleSensorSelectDialog();
+                openMultipleSelectionDialog();
             }
         });
     }
 
-    private void createMultipleSensorSelectDialog() {
+    private void openMultipleSelectionDialog() {
+        List<Integer> items = loadItems();
+        multipleSelectionDialog.show();
+        uncheckAllItems();
+        for (int item : items) {
+            multipleSelectionDialog.getListView().setItemChecked(item, true);
+        }
+    }
 
+    private boolean saveItems(List<Integer> items) {
+        String preferenceName = "selectedSensors";
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(preferenceName + "_size", items.size());
+        for (int i = 0; i < items.size(); i++)
+            editor.putInt(preferenceName + "_" + i, items.get(i));
+        return editor.commit();
+    }
+
+    public void uncheckAllItems() {
+        int numberOfItems = multipleSelectionDialog.getListView().getCheckedItemPositions().size();
+        for (int i = 0; i < numberOfItems; i++) {
+            multipleSelectionDialog.getListView().setItemChecked(i, false);
+        }
+    }
+
+    public List<Integer> loadItems() {
+        String preferenceName = "selectedSensors";
+        int size = preferences.getInt(preferenceName + "_size", 0);
+        List<Integer> items = new ArrayList<>();
+        for (int i = 0; i < size; i++)
+            items.add(preferences.getInt(preferenceName + "_" + i, 0));
+        return items;
+    }
+
+    private AlertDialog createMultipleSensorSelectDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Sensörleri Seç");
+        activeSensorList = getActiveSensorList();
+        builder.setMultiChoiceItems(getSensorNamesArray(activeSensorList), null, null);
+        builder.setPositiveButton("Tamam", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                acceptSensorSelection();
+            }
+        });
+        AlertDialog dialog = builder.create();
+
+        return dialog;
+    }
+
+    private void acceptSensorSelection() {
+        List<Integer> selectedItems = new ArrayList<>();
+        SparseBooleanArray checkedItems = multipleSelectionDialog.getListView().getCheckedItemPositions();
+        for (int i = 0; i < checkedItems.size(); i++) {
+            if (checkedItems.valueAt(i)) {
+                if(selectedItems.isEmpty()) {
+                    sensorList.setText(String.valueOf(i), TextView.BufferType.EDITABLE);
+                } else {
+                    sensorList.setText(sensorList.getText() + "\n" + String.valueOf(i));
+                }
+                selectedItems.add(checkedItems.keyAt(i));
+
+            }
+        }
+        saveItems(selectedItems);
+    }
+
+    private String[] getSensorNamesArray(List<Sensor> sensorList) {
+        List<String> sensorNameList = new ArrayList();
+        for (Sensor sensor : sensorList) {
+            String sensorName = findSensorNameByType(sensor.getType());
+            if (sensorName != null) {
+                sensorNameList.add(sensorName);
+            }
+        }
+        return sensorNameList.toArray(new String[0]);
+    }
+
+    private List<Sensor> getActiveSensorList() {
+        SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        activeSensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
+        List<Sensor> newSensorList = new ArrayList<>();
+        for (Sensor sensor : activeSensorList) {
+            String sensorName = findSensorNameByType(sensor.getType());
+            if (sensorName != null) {
+                newSensorList.add(sensor);
+            }
+        }
+        return newSensorList;
     }
 
     private void initEditTextListener(final EditText editText) {
@@ -305,6 +406,37 @@ public class ScheduleFragment extends Fragment {
         timeMap.put("hour", Integer.parseInt(timeParts[0]));
         timeMap.put("minute", Integer.parseInt(timeParts[1]));
         return timeMap;
+    }
+
+    private String findSensorNameByType(int sensorType) {
+        switch (sensorType) {
+            case Sensor.TYPE_ACCELEROMETER:
+                return getString(R.string.sensor_accelerometer);
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                break;
+            case Sensor.TYPE_GRAVITY:
+                return getString(R.string.sensor_gravity);
+            case Sensor.TYPE_GYROSCOPE:
+                return getString(R.string.sensor_gyroscope);
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                return getString(R.string.sensor_relative_humidity);
+            case Sensor.TYPE_LIGHT:
+                return getString(R.string.sensor_light);
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                return getString(R.string.sensor_magnetic_field);
+            case Sensor.TYPE_PRESSURE:
+                return getString(R.string.sensor_pressure);
+            case Sensor.TYPE_PROXIMITY:
+                return getString(R.string.sensor_proximity);
+            case Sensor.TYPE_ROTATION_VECTOR:
+                return getString(R.string.sensor_rotation_vector);
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                return getString(R.string.sensor_ambient_temperature);
+            case Sensor.TYPE_ALL:
+                return getString(R.string.sensor_multiple);
+            default:
+        }
+        return null;
     }
 
 }
