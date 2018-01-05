@@ -2,11 +2,19 @@ package org.ytu.adem.datacollector.sensors.common;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.FileObserver;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +39,12 @@ public class RecordFragment extends Fragment {
     private FileObserver observer;
     private View v;
     private String configFileName;
+    private AppCompatImageButton viewButton;
+    private AppCompatImageButton deleteButton;
+    private AppCompatImageButton sendButton;
+    private ListView recordList;
+    private int defaultButtonColor;
+    private ArrayList<FileItem> fileItems;
 
     public RecordFragment() {
 
@@ -50,15 +64,23 @@ public class RecordFragment extends Fragment {
     @Nullable
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_record, container, false);
-        ListView recordList = (ListView) v.findViewById(R.id.recordList);
+        recordList = (ListView) v.findViewById(R.id.recordList);
         File recordDirectory = getContext().getExternalFilesDir(this.configFileName + "/");
         File[] files = recordDirectory.listFiles();
 
-        final ArrayList<FileItem> fileItems = new ArrayList();
+        fileItems = new ArrayList();
         for (int i = files.length - 1; i >= 0; i--) {
             FileItem item = new FileItem(Uri.fromFile(files[i]), files[i].getName(), new Date(files[i].lastModified()));
             fileItems.add(item);
         }
+        initButtons();
+
+        recordList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                setButtonStates();
+            }
+        });
 
         observer = new DirectoryFileObserver(this, getContext().getExternalFilesDir(null).toString());
         observer.startWatching();
@@ -67,8 +89,56 @@ public class RecordFragment extends Fragment {
         return v;
     }
 
-    private void initViewButton() {
+    private void initButtons() {
+        viewButton = (AppCompatImageButton) v.findViewById(R.id.viewButton);
+        viewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedItemId = 0;
+                for (int i = 0; i < recordList.getCheckedItemPositions().size(); i++) {
+                    if (recordList.getCheckedItemPositions().get(i)) {
+                        selectedItemId = i;
+                    }
+                }
+                viewTextFile((FileItem) fileItems.get(selectedItemId));
+            }
+        });
+        deleteButton = (AppCompatImageButton) v.findViewById(R.id.deleteButton);
+        sendButton = (AppCompatImageButton) v.findViewById(R.id.sendButton);
 
+    }
+
+    private void setButtonStates() {
+        int checkedItemCount = recordList.getCheckedItemCount();
+        if (checkedItemCount == 0) {
+            disableAllButtons();
+        } else if (checkedItemCount == 1) {
+            enableButton(viewButton, getResources().getColor(android.R.color.holo_blue_dark));
+            enableButton(deleteButton, getResources().getColor(android.R.color.holo_red_dark));
+            enableButton(sendButton, getResources().getColor(android.R.color.holo_green_dark));
+        } else if (checkedItemCount > 1) {
+            disableButton(viewButton);
+        }
+    }
+
+    private void enableButton(AppCompatImageButton button, int color) {
+        button.setClickable(true);
+        button.setBackgroundTintList(ColorStateList.valueOf(color));
+    }
+
+    private void disableButton(AppCompatImageButton button) {
+        button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E0E0E0")));
+        button.setClickable(false);
+    }
+
+    private void disableAllButtons() {
+        int defaultColor = Color.parseColor("#E0E0E0");
+        viewButton.setBackgroundTintList(ColorStateList.valueOf(defaultColor));
+        deleteButton.setBackgroundTintList(ColorStateList.valueOf(defaultColor));
+        sendButton.setBackgroundTintList(ColorStateList.valueOf(defaultColor));
+        viewButton.setClickable(false);
+        deleteButton.setClickable(false);
+        sendButton.setClickable(false);
     }
 
     private void viewTextFile(FileItem fileItem) {

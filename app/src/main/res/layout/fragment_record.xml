@@ -16,7 +16,7 @@
         android:id="@+id/sendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/viewButton"
+        android:layout_toRightOf="@+id/viewButton"
         android:clickable="false"
         app:srcCompat="@drawable/ic_email_black_24dp"/>
 
@@ -24,7 +24,7 @@
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/sendButton"
+        android:layout_toRightOf="@+id/sendButton"
         android:clickable="false"
         app:srcCompat="@drawable/ic_delete_black_24dp"/>
 
@@ -41,6 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@id/viewButton"
         android:layout_below="@+id/viewButton"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:choiceMode="multipleChoice"></ListView>
 
