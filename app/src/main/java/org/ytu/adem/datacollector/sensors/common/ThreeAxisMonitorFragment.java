@@ -259,7 +259,7 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
             case Sensor.TYPE_ACCELEROMETER:
                 return getString(R.string.sensor_accelerometer);
             case Sensor.TYPE_LINEAR_ACCELERATION:
-                break;
+                return getString(R.string.sensor_linear_acceleration);
             case Sensor.TYPE_GRAVITY:
                 return getString(R.string.sensor_gravity);
             case Sensor.TYPE_GYROSCOPE:

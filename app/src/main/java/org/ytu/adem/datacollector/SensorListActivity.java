@@ -194,7 +194,6 @@ public class SensorListActivity extends AppCompatActivity {
 
         if (((CheckBox) view).isChecked()) {
             setSelectedSensors(view.getId(), true);
-            selectedCount++;
         } else {
             setSelectedSensors(view.getId(), false);
             selectedCount--;

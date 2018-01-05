@@ -47,6 +47,10 @@ public class Receiver extends BroadcastReceiver {
         String sensorName = startAction(sensorType, actionStart);
         if (actionStart)
             Toast.makeText(context, context.getResources().getString(R.string.record_started, sensorName), Toast.LENGTH_LONG).show();
+        else if (selectedSensors != null) {
+            Toast.makeText(context, sensorName + " sensör için kayıt işlemi başladı.", Toast.LENGTH_LONG).show();
+
+        }
     }
 
 

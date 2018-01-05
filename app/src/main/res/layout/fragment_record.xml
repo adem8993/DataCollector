@@ -1,20 +1,48 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-              android:orientation="vertical"
-    android:layout_marginLeft="@dimen/activity_vertical_margin">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/recordListLabel"
-        android:layout_width="match_parent"
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/viewButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/records_history"
-        android:textStyle="bold" />
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        app:srcCompat="@drawable/ic_pageview_black_24dp"/>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/viewButton"
+        android:clickable="false"
+        app:srcCompat="@drawable/ic_email_black_24dp"/>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/sendButton"
+        android:clickable="false"
+        app:srcCompat="@drawable/ic_delete_black_24dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:ems="4"
+        android:hint="Tarih"/>
 
     <ListView
         android:id="@+id/recordList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/recordListLabel"></ListView>
-</LinearLayout>
+        android:layout_alignStart="@id/viewButton"
+        android:layout_below="@+id/viewButton"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:choiceMode="multipleChoice"></ListView>
+
+
+</RelativeLayout>

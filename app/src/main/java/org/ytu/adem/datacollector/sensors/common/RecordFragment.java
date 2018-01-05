@@ -59,17 +59,16 @@ public class RecordFragment extends Fragment {
             FileItem item = new FileItem(Uri.fromFile(files[i]), files[i].getName(), new Date(files[i].lastModified()));
             fileItems.add(item);
         }
-        recordList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                viewTextFile(fileItems.get(i));
-            }
-        });
+
         observer = new DirectoryFileObserver(this, getContext().getExternalFilesDir(null).toString());
         observer.startWatching();
-        ArrayAdapter<FileItem> listAdapter = new ArrayAdapter<FileItem>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, fileItems);
+        ArrayAdapter<FileItem> listAdapter = new ArrayAdapter<FileItem>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, fileItems);
         recordList.setAdapter(listAdapter);
         return v;
+    }
+
+    private void initViewButton() {
+
     }
 
     private void viewTextFile(FileItem fileItem) {
@@ -79,4 +78,7 @@ public class RecordFragment extends Fragment {
         getActivity().startActivity(Intent.createChooser(pdfIntent, "Uygulama Seç"));
     }
 
+    private void sendMail() {
+
+    }
 }
