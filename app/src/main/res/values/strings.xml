@@ -22,6 +22,8 @@
     <string name="schedule">Zamanla</string>
     <string name="records">Kayıtlar</string>
     <string name="records_history">Geçmiş Kayıtlar</string>
+    <string name="record_deleted_succesfully">Başarı ile silindi.</string>
+    <string name="record_could_not_be_deleted">Silinemedi.</string>
     <string name="schedule_active">Aktif</string>
     <string name="schedule_passive">Pasif</string>
     <string name="schedule_start_time">Başlangıç Saati</string>

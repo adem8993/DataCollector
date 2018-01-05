@@ -1,19 +1,17 @@
 package org.ytu.adem.datacollector.sensors.common;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.FileObserver;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +27,7 @@ import org.ytu.adem.datacollector.model.FileItem;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Adem on 17.12.2017.
@@ -36,6 +35,7 @@ import java.util.Date;
 
 public class RecordFragment extends Fragment {
 
+    ArrayAdapter<FileItem> listAdapter;
     private FileObserver observer;
     private View v;
     private String configFileName;
@@ -84,14 +84,21 @@ public class RecordFragment extends Fragment {
 
         observer = new DirectoryFileObserver(this, getContext().getExternalFilesDir(null).toString());
         observer.startWatching();
-        ArrayAdapter<FileItem> listAdapter = new ArrayAdapter<FileItem>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, fileItems);
+        listAdapter = new ArrayAdapter<FileItem>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, fileItems);
         recordList.setAdapter(listAdapter);
         return v;
     }
 
     private void initButtons() {
         viewButton = (AppCompatImageButton) v.findViewById(R.id.viewButton);
-        viewButton.setOnClickListener(new View.OnClickListener() {
+        viewButton.setOnClickListener(getViewButtonOnClickListener());
+        deleteButton = (AppCompatImageButton) v.findViewById(R.id.deleteButton);
+        deleteButton.setOnClickListener(getDeleteButtonOnClickListener());
+        sendButton = (AppCompatImageButton) v.findViewById(R.id.sendButton);
+    }
+
+    private View.OnClickListener getViewButtonOnClickListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int selectedItemId = 0;
@@ -102,20 +109,42 @@ public class RecordFragment extends Fragment {
                 }
                 viewTextFile((FileItem) fileItems.get(selectedItemId));
             }
-        });
-        deleteButton = (AppCompatImageButton) v.findViewById(R.id.deleteButton);
-        sendButton = (AppCompatImageButton) v.findViewById(R.id.sendButton);
+        };
+    }
 
+    private View.OnClickListener getDeleteButtonOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDeleteConfirmationDialog();
+            }
+        };
+    }
+
+    private void openDeleteConfirmationDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Silme Onayı")
+                .setMessage("Dosyaları silmek istediğinize emin misiniz?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        deleteFiles();
+                        listAdapter.notifyDataSetChanged();
+                        recordList.getCheckedItemPositions().clear();
+                        setButtonStates();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
     }
 
     private void setButtonStates() {
-        int checkedItemCount = recordList.getCheckedItemCount();
+        int checkedItemCount = recordList.getCheckedItemPositions().size();
         if (checkedItemCount == 0) {
             disableAllButtons();
         } else if (checkedItemCount == 1) {
-            enableButton(viewButton, getResources().getColor(android.R.color.holo_blue_dark));
-            enableButton(deleteButton, getResources().getColor(android.R.color.holo_red_dark));
-            enableButton(sendButton, getResources().getColor(android.R.color.holo_green_dark));
+            enableButton(viewButton, ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
+            enableButton(deleteButton, ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
+            enableButton(sendButton, ContextCompat.getColor(getContext(), android.R.color.holo_green_dark));
         } else if (checkedItemCount > 1) {
             disableButton(viewButton);
         }
@@ -146,6 +175,28 @@ public class RecordFragment extends Fragment {
         pdfIntent.setDataAndType(fileItem.getPath(), "text/plain");
         pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         getActivity().startActivity(Intent.createChooser(pdfIntent, "Uygulama Seç"));
+    }
+
+    private void deleteFiles() {
+        List<Integer> fileIndexes = new ArrayList<>();
+        List<FileItem> toBeDeletedFiles = new ArrayList<>();
+        int size = fileItems.size();
+        for (int i = 0; i < size; i++) {
+            if (recordList.getCheckedItemPositions().get(i)) {
+                fileIndexes.add(i);
+                toBeDeletedFiles.add(fileItems.get(i));
+            }
+        }
+
+        for (int i = 0; i < toBeDeletedFiles.size(); i++) {
+            fileItems.remove(0);
+            File file = new File(toBeDeletedFiles.get(i).getPath().getPath());
+            if (file.exists()) {
+                if (!file.delete()) {
+                    fileItems.add(toBeDeletedFiles.get(i));
+                }
+            }
+        }
     }
 
     private void sendMail() {
