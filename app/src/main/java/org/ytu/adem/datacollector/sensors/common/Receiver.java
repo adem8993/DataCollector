@@ -45,14 +45,14 @@ public class Receiver extends BroadcastReceiver {
             return;
         }
         String sensorName = startAction(sensorType, actionStart);
-        if (actionStart)
-            Toast.makeText(context, context.getResources().getString(R.string.record_started, sensorName), Toast.LENGTH_LONG).show();
-        else if (selectedSensors != null) {
-            Toast.makeText(context, sensorName + " sensör için kayıt işlemi başladı.", Toast.LENGTH_LONG).show();
-
+        if (actionStart) {
+            if (selectedSensors != null) {
+                Toast.makeText(context, sensorName + " sensör için kayıt işlemi başladı.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.record_started, sensorName), Toast.LENGTH_LONG).show();
+            }
         }
     }
-
 
     private Boolean initActionStart(String action) {
         Boolean actionStart = null;

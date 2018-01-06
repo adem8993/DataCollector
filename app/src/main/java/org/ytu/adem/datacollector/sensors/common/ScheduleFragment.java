@@ -171,8 +171,9 @@ public class ScheduleFragment extends Fragment {
         List<Integer> items = loadItems();
         multipleSelectionDialog.show();
         uncheckAllItems();
+        int i = 0;
         for (int item : items) {
-            multipleSelectionDialog.getListView().setItemChecked(item, true);
+            multipleSelectionDialog.getListView().setItemChecked(activeSensorList.indexOf(item), true);
         }
     }
 
@@ -222,7 +223,7 @@ public class ScheduleFragment extends Fragment {
         boolean hasSelectedItem = false;
         SparseBooleanArray checkedItems = multipleSelectionDialog.getListView().getCheckedItemPositions();
         for (int i = 0; i < checkedItems.size(); i++) {
-            if (checkedItems.valueAt(i)) {
+            if (checkedItems.get(i)) {
                 hasSelectedItem = true;
                 String sensorName = findSensorNameByType(activeSensorList.get(i).getType());
                 if (selectedItems.isEmpty()) {
