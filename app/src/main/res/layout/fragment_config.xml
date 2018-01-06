@@ -31,6 +31,7 @@
             android:ems="10"
             android:hint="@string/config_frequency"
             android:inputType="number"
+            android:imeOptions="actionDone"
             android:maxLength="3" />
     </android.support.design.widget.TextInputLayout>
 
@@ -47,6 +48,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/config_file_name"
+            android:imeOptions="actionDone"
             android:inputType="text" />
     </android.support.design.widget.TextInputLayout>
 
@@ -62,6 +64,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/config_precision"
+            android:imeOptions="actionDone"
             android:inputType="number"
             android:maxLength="1" />
 
@@ -80,6 +83,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/config_mail"
+            android:imeOptions="actionDone"
             android:inputType="textWebEmailAddress"
             android:maxLength="255" />
 

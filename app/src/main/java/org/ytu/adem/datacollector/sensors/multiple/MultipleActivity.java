@@ -41,6 +41,7 @@ public class MultipleActivity extends FragmentActivity {
         adapter.addFragment(new ConfigFragment(configFileName, true), getString(R.string.config));
         adapter.addFragment(new RecordFragment(configFileName), getString(R.string.records));
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
     }
 
     private void initTabLayout() {

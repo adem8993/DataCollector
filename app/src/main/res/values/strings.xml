@@ -22,6 +22,7 @@
     <string name="schedule">Zamanla</string>
     <string name="records">Kayıtlar</string>
     <string name="records_history">Geçmiş Kayıtlar</string>
+    <string name="records_mail_date_format">yyyy-MM-dd HH:mm:ss</string>
     <string name="record_deleted_succesfully">Başarı ile silindi.</string>
     <string name="record_could_not_be_deleted">Silinemedi.</string>
     <string name="schedule_active">Aktif</string>
@@ -47,7 +48,7 @@
     <string name="config">Ayarla</string>
     <string name="start">Başla</string>
     <string name="finish">Bitir</string>
-    <string name="config_file_name">Dosya Adı</string>
+    <string name="config_file_name">Aktivite Adı</string>
     <string name="config_frequency">Frekans</string>
     <string name="config_date_format">Tarih Formatı</string>
     <string name="config_precision">Hassasiyet</string>

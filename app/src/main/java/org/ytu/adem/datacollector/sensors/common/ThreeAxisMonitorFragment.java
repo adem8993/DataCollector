@@ -62,6 +62,7 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
     private LineChart chart;
     private long lastUpdate = 0;
     private Button stopButton;
+    private Button startButton;
     private int precision;
     private int frequency;
     private String configFileName;
@@ -95,6 +96,7 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
         fileHeaderText = Util.prepareFileHeader(preferences.getString(getString(R.string.shared_preferences_sensorName), "Bilinmeyen"), frequency, precision);
         sensorManager.registerListener(this, activeSensor,
                 SensorManager.SENSOR_DELAY_GAME);
+        startButton.setEnabled(false);
         stopButton.setEnabled(true);
 
     }
@@ -104,6 +106,7 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
         resetSensorData();
         chart.invalidate();
         chart.clear();
+        startButton.setEnabled(true);
         stopButton.setEnabled(false);
         sensorManager.unregisterListener(this);
     }
@@ -120,7 +123,7 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
         preferences = getContext().getSharedPreferences(this.configFileName, MODE_PRIVATE);
 
         chart = (LineChart) getActivity().findViewById(R.id.accelerometerChart);
-        Button startButton = (Button) getActivity().findViewById(R.id.startButton);
+        startButton = (Button) getActivity().findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
             @Override
@@ -194,17 +197,17 @@ public class ThreeAxisMonitorFragment extends Fragment implements SensorEventLis
                         Util.formatFloatValueByPrecision(event.values[2], precision)).toString();
         valuesToWrite.add(valuesWithDate);
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        LineDataSet dataSetX = new LineDataSet(xEntries, "0");
+        LineDataSet dataSetX = new LineDataSet(xEntries, String.format("%." + precision + "f", event.values[0]));
         dataSetX.setColor(Color.BLUE);
         dataSetX.setValueTextColor(Color.BLACK);
         dataSetX.setLineWidth(LINE_WIDTH);
         dataSetX.setDrawCircles(false);
-        LineDataSet dataSetY = new LineDataSet(yEntries, String.valueOf(activeSensor.getMinDelay()));
+        LineDataSet dataSetY = new LineDataSet(yEntries, String.format("%." + precision + "f", event.values[1]));
         dataSetY.setColor(Color.YELLOW);
         dataSetY.setValueTextColor(Color.BLACK);
         dataSetY.setLineWidth(LINE_WIDTH);
         dataSetY.setDrawCircles(false);
-        LineDataSet dataSetZ = new LineDataSet(zEntries, "0");
+        LineDataSet dataSetZ = new LineDataSet(zEntries, String.format("%." + precision + "f", event.values[2]));
         dataSetZ.setColor(Color.RED);
         dataSetZ.setValueTextColor(Color.BLACK);
         dataSetZ.setLineWidth(LINE_WIDTH);
