@@ -19,6 +19,7 @@ import java.util.Date;
 
 public class GravityRecorder extends BaseRecorderService {
     private String configFileName;
+    private String fileHeaderText;
 
     public GravityRecorder() {
         super("GravityRecorder");
@@ -29,6 +30,7 @@ public class GravityRecorder extends BaseRecorderService {
         sensorManager = (SensorManager) getApplicationContext()
                 .getSystemService(SENSOR_SERVICE);
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        fileHeaderText = Util.prepareFileHeader(getString(R.string.sensor_gravity), frequency, precision);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         lastUpdate = System.currentTimeMillis();
         return START_STICKY;
@@ -47,8 +49,8 @@ public class GravityRecorder extends BaseRecorderService {
     @Override
     public void onDestroy() {
         sensorManager.unregisterListener(this);
-        String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "Tanımsız");
-        writeSensorDataToFile(configFileName, fileName, "");
+        String fileName = preferences.getString(getString(R.string.shared_preferences_fileName), "Genel");
+        writeSensorDataToFile(configFileName, fileName, fileHeaderText);
         super.onDestroy();
     }
 

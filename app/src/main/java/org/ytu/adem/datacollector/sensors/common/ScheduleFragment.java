@@ -59,6 +59,7 @@ public class ScheduleFragment extends Fragment {
     private AlertDialog multipleSelectionDialog;
     private List<Sensor> activeSensorList = new ArrayList<>();
     private Map<Integer, String> selectedSensors = new HashMap<>();
+    private Switch active;
 
     public ScheduleFragment() {
 
@@ -85,7 +86,7 @@ public class ScheduleFragment extends Fragment {
         final Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
         final EditText recordLengthHour = (EditText) v.findViewById(R.id.recordLengthHour);
         final EditText recordLengthMinute = (EditText) v.findViewById(R.id.recordLengthMinute);
-        final Switch active = (Switch) v.findViewById(R.id.active);
+        active = (Switch) v.findViewById(R.id.active);
         startTime.setText(preferences.getString(getResources().getString(R.string.shared_preferences_startTime), null));
         recordLengthHour.setText(String.valueOf(getRecordLength().getHour()));
         recordLengthMinute.setText(String.valueOf(getRecordLength().getMinute()));
@@ -123,7 +124,6 @@ public class ScheduleFragment extends Fragment {
 
     private void initRecordFrequencies() {
         Spinner recordFrequency = (Spinner) v.findViewById(R.id.recordFrequency);
-        recordFrequency.setEnabled(false);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
                 R.array.schedule_frequencies, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -282,25 +282,23 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void clickActiveCheckbox(Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
-        Switch checkbox = (Switch) v.findViewById(R.id.active);
-
-        if (checkbox.isChecked()) {
+        if (active.isChecked()) {
             if (checkRequiredFields(recordLengthHour, recordLengthMinute)) {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString(getString(R.string.shared_preferences_startTime), startTime.getText().toString());
                 editor.putInt(getString(R.string.shared_preferences_recordLength), getRecordLengthValue(Integer.valueOf(recordLengthHour.getText().toString()), Integer.valueOf(recordLengthMinute.getText().toString())));
                 editor.commit();
                 changeScheduleStatus(true, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
-                checkbox.setText(getString(R.string.schedule_active));
+                active.setText(getString(R.string.schedule_active));
             } else {
-                checkbox.setChecked(false);
-                checkbox.setText(getString(R.string.schedule_passive));
+                active.setChecked(false);
+                active.setText(getString(R.string.schedule_passive));
             }
         } else {
-            checkbox.setText(getString(R.string.schedule_passive));
+            active.setText(getString(R.string.schedule_passive));
             changeScheduleStatus(false, startTime, recordFrequency, recordLengthHour, recordLengthMinute);
         }
-        initScheduleInfo(checkbox.isChecked());
+        initScheduleInfo(active.isChecked());
     }
 
     private void changeScheduleStatus(boolean activated, EditText startTime, Spinner recordFrequency, EditText recordLengthHour, EditText recordLengthMinute) {
@@ -308,9 +306,11 @@ public class ScheduleFragment extends Fragment {
         if (activated) {
             editor.putBoolean(getResources().getString(R.string.shared_preferences_scheduleActive), activated);
             scheduleAlarm();
+            setActivated(true);
         } else {
             editor.remove("scheduleActive");
             cancelAlarm();
+            setActivated(false);
         }
         editor.commit();
         startTime.setEnabled(!activated);
@@ -373,6 +373,7 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void scheduleAlarm() {
+        if (preferences.getBoolean("activated", false)) return;
         Map<String, Integer> timeMap = getTimeHourAndMinute(startTime.getText().toString());
         int alarmHour = timeMap.get("hour");
         int alarmMinute = timeMap.get("minute");
@@ -397,14 +398,18 @@ public class ScheduleFragment extends Fragment {
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         //set the alarm for particular time
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
-                sensorType,
-                intentAlarm, PendingIntent.FLAG_ONE_SHOT));
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
+                sensorType, intentAlarm, PendingIntent.FLAG_ONE_SHOT));
         intentAlarm.putExtra("action", Action.STOP.toString());
         cal_alarm.add(Calendar.MINUTE, preferences.getInt(getString(R.string.shared_preferences_recordLength), 0));
-        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
-                100 - sensorType,
-                intentAlarm, PendingIntent.FLAG_ONE_SHOT));
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), PendingIntent.getBroadcast(this.getActivity(),
+                100 - sensorType, intentAlarm, PendingIntent.FLAG_ONE_SHOT));
+    }
+
+    private void setActivated(boolean activated) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("activated", activated);
+        editor.commit();
     }
 
     private Dialog createDialog(EditText editText) {

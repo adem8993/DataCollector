@@ -1,25 +1,35 @@
 package org.ytu.adem.datacollector.sensors.common;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageButton;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.ytu.adem.datacollector.R;
+import org.ytu.adem.datacollector.db.DatabaseHandler;
 import org.ytu.adem.datacollector.util.InputFilterMinMax;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,13 +42,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ConfigFragment extends Fragment {
     private EditText frequency;
-    private EditText fileName;
+    private Spinner fileName;
     private EditText mail;
     private EditText precision;
     private Spinner dateFormat;
     private SharedPreferences preferences;
     private String configFileName;
     private boolean isMultiple;
+    private SQLiteDatabase db;
 
     public ConfigFragment() {
 
@@ -68,20 +79,18 @@ public class ConfigFragment extends Fragment {
         });
     }
 
-    private void initFileNameEditTextListener() {
-        fileName.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
+    private void initFileNameSpinnerListener() {
+        fileName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedFileName = (String) adapterView.getItemAtPosition(i);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("fileName", selectedFileName);
+                editor.commit();
+                fileName.setSelection(i);
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("fileName", s.toString());
-                    editor.commit();
-                }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                return;
             }
         });
     }
@@ -160,9 +169,90 @@ public class ConfigFragment extends Fragment {
     }
 
     private void initFileName() {
-        fileName = (EditText) getActivity().findViewById(R.id.fileName);
-        fileName.setText(preferences.getString("fileName", "Tanımsız"));
-        initFileNameEditTextListener();
+        fileName = (Spinner) getActivity().findViewById(R.id.fileName);
+        loadActivityData();
+        initFileNameSpinnerListener();
+    }
+
+    private void initAddActivityButton() {
+        AppCompatImageButton addButton = (AppCompatImageButton) getActivity().findViewById(R.id.addActivity);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openAddActivityDialog();
+            }
+        });
+    }
+
+    private void openAddActivityDialog() {
+        final EditText activityName = new EditText(getContext());
+        activityName.setSingleLine();
+        FrameLayout container = new FrameLayout(getActivity());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        activityName.setLayoutParams(params);
+        container.addView(activityName);
+        new AlertDialog.Builder(getContext())
+                .setTitle("Aktivite Adı")
+                .setView(container)
+                .setPositiveButton("Ekle", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        addNewActivity(activityName);
+                    }
+                })
+                .setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .show();
+    }
+
+    private void addNewActivity(EditText inputLabel) {
+        String label = inputLabel.getText().toString();
+
+        if (label.trim().length() > 0) {
+            // database handler
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+
+            // inserting new label into database
+            db.insertLabel(label);
+
+            // making input filed text to blank
+            inputLabel.setText("");
+
+            // Hiding the keyboard
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(inputLabel.getWindowToken(), 0);
+
+            // loading spinner with newly added data
+            loadActivityData();
+        } else {
+            Toast.makeText(getContext(), "Aktivite adı giriniz",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadActivityData() {
+        // database handler
+        // Spinner Drop down elements
+        DatabaseHandler dbHandler = new DatabaseHandler(getActivity().getApplicationContext());
+        List<String> activities = dbHandler.getAllActivities();
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, activities);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        fileName.setAdapter(dataAdapter);
+        String selectedValue = preferences.getString(getString(R.string.shared_preferences_fileName), "Genel");
+        int pos = dataAdapter.getPosition(selectedValue);
+        fileName.setSelection(pos);
     }
 
     private void initMail() {
@@ -214,9 +304,11 @@ public class ConfigFragment extends Fragment {
         super.onStart();
         preferences = getContext().getSharedPreferences(this.configFileName, MODE_PRIVATE);
         initFrequency();
-        initFileName();
         initMail();
         initPrecision();
         initDateFormat();
+        initAddActivityButton();
+        initFileName();
+
     }
 }
