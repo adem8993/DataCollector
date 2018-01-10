@@ -96,6 +96,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
+                    android:drawableLeft="@drawable/ic_accelerometer"
                     android:onClick="openAccelerometerActivity"
                     android:text="@string/sensor_accelerometer"/>
             </LinearLayout>
@@ -115,6 +116,7 @@
                     android:id="@+id/btn_temperature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_temperature"
                     android:onClick="openTemperatureActivity"
                     android:text="@string/sensor_ambient_temperature"/>
             </LinearLayout>
@@ -134,6 +136,7 @@
                     android:id="@+id/btn_gravity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_gravity"
                     android:onClick="openGravityActivity"
                     android:text="@string/sensor_gravity"/>
             </LinearLayout>
@@ -153,6 +156,7 @@
                     android:id="@+id/btn_gyroscope"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_gyroscope"
                     android:onClick="openGyroscopeActivity"
                     android:text="@string/sensor_gyroscope"/>
             </LinearLayout>
@@ -172,6 +176,7 @@
                     android:id="@+id/btn_light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_light"
                     android:onClick="openLightActivity"
                     android:text="@string/sensor_light"/>
             </LinearLayout>
@@ -191,6 +196,7 @@
                     android:id="@+id/btn_linear_acceleration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_acceleration"
                     android:onClick="openAccelerationActivity"
                     android:text="@string/sensor_linear_acceleration"/>
             </LinearLayout>
@@ -210,6 +216,7 @@
                     android:id="@+id/btn_magnetic_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_magnetic_field"
                     android:onClick="openMagneticFieldActivity"
                     android:text="@string/sensor_magnetic_field"/>
             </LinearLayout>
@@ -229,6 +236,7 @@
                     android:id="@+id/btn_pressure"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_pressure"
                     android:onClick="openPressureActivity"
                     android:text="@string/sensor_pressure"/>
             </LinearLayout>
@@ -248,6 +256,7 @@
                     android:id="@+id/btn_proximity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_proximity"
                     android:onClick="openProximityActivity"
                     android:text="@string/sensor_proximity"/>
             </LinearLayout>
@@ -267,6 +276,7 @@
                     android:id="@+id/btn_relative_humidity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_humidity"
                     android:onClick="openHumidityActivity"
                     android:text="@string/sensor_relative_humidity"/>
             </LinearLayout>
@@ -286,6 +296,7 @@
                     android:id="@+id/btn_rotation_vector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_rotation_vector"
                     android:onClick="openRotationVectorActivity"
                     android:text="@string/sensor_rotation_vector"/>
             </LinearLayout>
