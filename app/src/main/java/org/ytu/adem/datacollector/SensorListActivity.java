@@ -1,22 +1,31 @@
 package org.ytu.adem.datacollector;
 
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.os.OperationCanceledException;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
-import org.ytu.adem.datacollector.sensors.multiple.MultipleActivity;
-import org.ytu.adem.datacollector.sensors.multiple.MultipleRecorder;
 import org.ytu.adem.datacollector.sensors.acceleration.AccelerationActivity;
 import org.ytu.adem.datacollector.sensors.accelerometer.AccelerometerActivity;
 import org.ytu.adem.datacollector.sensors.gravity.GravityActivity;
@@ -24,14 +33,18 @@ import org.ytu.adem.datacollector.sensors.gyroscope.GyroscopeActivity;
 import org.ytu.adem.datacollector.sensors.humidity.HumidityActivity;
 import org.ytu.adem.datacollector.sensors.light.LightActivity;
 import org.ytu.adem.datacollector.sensors.magneticField.MagneticFieldActivity;
+import org.ytu.adem.datacollector.sensors.multiple.MultipleActivity;
+import org.ytu.adem.datacollector.sensors.multiple.MultipleRecorder;
 import org.ytu.adem.datacollector.sensors.pressure.PressureActivity;
 import org.ytu.adem.datacollector.sensors.proximity.ProximityActivity;
 import org.ytu.adem.datacollector.sensors.rotationVector.RotationVectorActivity;
 import org.ytu.adem.datacollector.sensors.temperature.TemperatureActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SensorListActivity extends AppCompatActivity {
     private SensorManager sensorManager;
@@ -47,6 +60,7 @@ public class SensorListActivity extends AppCompatActivity {
     private Sensor humiditySensor;
     private Sensor rotationVectorSensor;
     private Map<Integer, String> selectedSensors = new HashMap<>();
+    private AccountManager accountManager;
     private int selectedCount = 0;
 
     @Override
@@ -55,6 +69,8 @@ public class SensorListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sensor_list);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         initMultipleRecordButton();
+        accountManager = AccountManager.get(this);
+        initAccounts();
         initMultipleConfigButton();
         getSensors();
         setButtonStates();
@@ -122,7 +138,46 @@ public class SensorListActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage() {
+    private void initAccounts() {
+        if (ContextCompat.checkSelfPermission(SensorListActivity.this, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(SensorListActivity.this, Manifest.permission.GET_ACCOUNTS)) {
+                ActivityCompat.requestPermissions(SensorListActivity.this, new String[]{Manifest.permission.GET_ACCOUNTS}, 1);
+            } else {
+                ActivityCompat.requestPermissions(SensorListActivity.this, new String[]{Manifest.permission.GET_ACCOUNTS}, 1);
+            }
+        } else {
+            //do some stuff
+            ArrayList<String> emails = new ArrayList<>();
+
+            Pattern gmailPattern = Patterns.EMAIL_ADDRESS;
+            Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
+
+            for (Account account : accounts) {
+                if (gmailPattern.matcher(account.name).matches()) {
+                    emails.add(account.name);
+                    sendMessage(account);
+                }
+            }
+
+            Toast.makeText(this, "Android Device Registered Email Address: " + emails.get(0), Toast
+                    .LENGTH_LONG).show();
+        }
+    }
+
+    private void getAuthToken(final Account account) {
+        accountManager.getAuthToken(account, AccountManager.KEY_AUTHTOKEN, null, this, new AccountManagerCallback<Bundle>() {
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+                    sendMessage(account);
+                } catch (OperationCanceledException e) {
+                } catch (Exception e) {
+                }
+            }
+        }, null);
+    }
+
+    private void sendMessage(final Account account) {
         final ProgressDialog dialog = new ProgressDialog(SensorListActivity.this);
         dialog.setTitle("Sending Email");
         dialog.setMessage("Please wait");
@@ -131,7 +186,8 @@ public class SensorListActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    GMailSender sender = new GMailSender("", "");
+                    String password = accountManager.getPassword(account);
+                    GMailSender sender = new GMailSender("dmkrblt@gmail.com", password);
                     sender.sendMail("EmailSender App",
                             "This is the message body",
                             "dmkrblt@gmail.com",
