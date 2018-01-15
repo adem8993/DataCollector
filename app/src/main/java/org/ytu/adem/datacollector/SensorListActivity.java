@@ -1,5 +1,6 @@
 package org.ytu.adem.datacollector;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.hardware.Sensor;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -118,6 +120,29 @@ public class SensorListActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void sendMessage() {
+        final ProgressDialog dialog = new ProgressDialog(SensorListActivity.this);
+        dialog.setTitle("Sending Email");
+        dialog.setMessage("Please wait");
+        dialog.show();
+        Thread sender = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    GMailSender sender = new GMailSender("", "");
+                    sender.sendMail("EmailSender App",
+                            "This is the message body",
+                            "dmkrblt@gmail.com",
+                            "dmkrblt@gmail.com");
+                    dialog.dismiss();
+                } catch (Exception e) {
+                    Log.e("mylog", "Error: " + e.getMessage());
+                }
+            }
+        });
+        sender.start();
     }
 
     private void startRecording() {
